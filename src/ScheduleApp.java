@@ -133,7 +133,7 @@ public class MyFrame extends JFrame implements ActionListener {
 
         int blankOccurence = 0;
         memoryStorage.add(" [en] ");
-        Boolean firstOccurence = true; //changed
+        Boolean firstOccurence = true; 
         for (String word : memoryStorage) {
             if (word.equals(" ") || word.equals("")) {
                 blankOccurence++;
@@ -146,7 +146,6 @@ public class MyFrame extends JFrame implements ActionListener {
 
             if (wordNoSpace.equals("[en]")) {
                 if (firstOccurence == true) {
-//                    temp.remove(0);
                     firstOccurence = false;
                 } else {
                     temp.remove(temp.size() - 1);
@@ -291,19 +290,12 @@ public class MyFrame extends JFrame implements ActionListener {
         JLabel nextPageLabel = new JLabel("Next Page");
         nextPage.add(nextPageLabel);
 
-//        nextPageEd = new JButton();
-//        nextPageEd.setPreferredSize(new Dimension(120, 30));
-//        nextPageEd.addActionListener(this);
-//        nextPageEd.setBackground(Color.WHITE);
-//        JLabel nextPageLabelEd = new JLabel("Next Page");
-//        nextPageEd.add(nextPageLabel);
-
         JPanel controlButtonsPanel = new JPanel();
         controlButtonsPanel.setPreferredSize(new Dimension(250, 40));
         controlButtonsPanel.setBackground(Color.GRAY);
         controlButtonsPanel.add(nextPage);
         controlButtonsPanel.add(enterManualEvent);
-        //
+
 
 
         String title = "";
@@ -315,7 +307,6 @@ public class MyFrame extends JFrame implements ActionListener {
         Boolean fourEventsBool = false;
         Boolean First = true;
         int EventIncremental = 0;
-//        if (!compactedMemoryStorage.get(0).get(0).equals("[en]")) compactedMemoryStorage.get(0).add(0,"[en]");
         for (List listItem : compactedMemoryStorage) {
             title = "";
             i++;
@@ -329,7 +320,7 @@ public class MyFrame extends JFrame implements ActionListener {
                 }
                 if (eventCreation) {
                     if (eventWordString.equals("[time]")) {
-                        //augment time
+                        //WIP
                     }
                 } else {
                     if (eventWordString.equals("[en]") & !First) {
@@ -440,11 +431,11 @@ public class MyFrame extends JFrame implements ActionListener {
             }
             if (eventsToDisplay.size() > 4) {
                 for (i = 1; i < 5; i++) {
-                    manualTimeDisplay.add(eventsToDisplay.get(i));              // remove
+                    manualTimeDisplay.add(eventsToDisplay.get(i));              
                 }
             } else {
                 for (i = 1; i < eventsToDisplay.size() + 1; i++) {
-                    manualTimeDisplay.add(eventsToDisplay.get(i));              //remove
+                    manualTimeDisplay.add(eventsToDisplay.get(i));             
                 }
 
             }
@@ -455,11 +446,11 @@ public class MyFrame extends JFrame implements ActionListener {
                 }
                 if (eventsToDisplay.size() > 4) {
                     for (i = 1; i < 5; i++) {
-                        manualEditDisplay.add(eventsToDisplay.get(i));              // remove
+                        manualEditDisplay.add(eventsToDisplay.get(i));              
                     }
                 } else {
                     for (i = 1; i < eventsToDisplay.size() + 1; i++) {
-                        manualEditDisplay.add(eventsToDisplay.get(i));              //remove
+                        manualEditDisplay.add(eventsToDisplay.get(i));              
                     }
 
                 }
@@ -800,7 +791,6 @@ public class MyFrame extends JFrame implements ActionListener {
                         array[3] = String.valueOf(Integer.valueOf(array[3]) - 60);
                         array[2] = String.valueOf(Integer.valueOf(array[2]) + 1);
                     }
-//                    if (Integer.valueOf(array[2]) > 12) array[2] = String.valueOf(Integer.valueOf(array[2]) - 12);
                 }
             } else {
                 if (Integer.valueOf(array[1]) < 0 || Integer.valueOf(array[3]) < 0) {
@@ -818,7 +808,6 @@ public class MyFrame extends JFrame implements ActionListener {
                     array[3] = String.valueOf(Integer.valueOf(array[3]) - 60);
                 }
 
-//                if (Integer.valueOf(array[0]) < 0) array[0] = String.valueOf(Integer.valueOf(array[0]) + 12);
             }
         }
         else{
@@ -996,7 +985,6 @@ public class MyFrame extends JFrame implements ActionListener {
                                         String val = String.valueOf(timeCompactMemStor.get(eventNum-1).get(timeIndexList.get(eventNum-1)));
                                         tempArray = val.split("-");
 
-//                                        tempArray[3] = String.valueOf(Integer.valueOf(tempArray[3]) - remainder);
                                         tempString = CheckTime(tempArray, true, false);
                                         timeCompactMemStor.get(eventNum - 1).set(timeIndexList.get(eventNum - 1), tempString);
                                         calculatedTime = eventSplit[0] + "-" + eventSplit[1] + "-" + eventSplit[2] + "-" + eventSplit[3];
@@ -1098,7 +1086,6 @@ public class MyFrame extends JFrame implements ActionListener {
                                         tempArray[3] = eventSplit[1];
 
 
-//                                    tempArray[3] = String.valueOf(Integer.valueOf(tempArray[3]) - remainder);
                                         tempString = CheckTime(tempArray, true, false);
                                         timeCompactMemStor.get(getVal).set(timeIndexList.get(getVal), tempString);
 
@@ -1106,12 +1093,9 @@ public class MyFrame extends JFrame implements ActionListener {
                                         calculatedTime = eventSplit[0] + "-" + eventSplit[1] + "-" + eventSplit[2] + "-" + eventSplit[3];
                                         timeCompactMemStor.remove(list);
                                         list.set(i, calculatedTime);
-//                                    timeCompactMemStor.get(eventNum).set(i, calculatedTime);
 
-//                                        timeCompactMemStor.remove(eventNum + totalManualEvents-1);          //weird fix. Somethings messing with eventNum (maybe order of events)
                                         timeCompactMemStor.add(getVal + 1, list);
                                         timeIndexList.add(getVal + 1, i);                 //current event so no need to remove. check
-//                                    timeCompactMemStor.remove(eventNum-1);
                                         //part 2 of event
                                         tempArray[0] = eventSplit[2];
                                         tempArray[1] = eventSplit[3];
@@ -1628,16 +1612,6 @@ public class MyFrame extends JFrame implements ActionListener {
 
             if (manualTime) {
                 int sizeDifference = eventsToDisplay.size() - manualTimeDisplayNumberOfEvents;
-//            if (sizeDifference<=0){
-//                manualTimeDisplayNumberOfEvents =4;
-//                sizeDifference = eventsToDisplay.size()-manualTimeDisplayNumberOfEvents;
-//                manualTimeDisplay.add(eventsToDisplay.get(1),1);
-//                manualTimeDisplay.add(eventsToDisplay.get(2),1);
-//                manualTimeDisplay.add(eventsToDisplay.get(3),1);
-//                this.revalidate();
-//                this.repaint();
-//                return;
-//            }
                 if (!First) manualTimeDisplayNumberOfEvents += 1;
                 if (sizeDifference <= 0) {
                     Error("No more Events!");

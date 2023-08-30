@@ -11,15 +11,18 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class MyFrame extends JFrame implements ActionListener {
+public class ScheduleApp extends JFrame implements ActionListener {
+
     String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
     String basicsFileLocation = fileLocation + "//Basics.txt";
     String TimeAssignedFile = fileLocation + "//Time.txt";
+
     Boolean Memory;
     ArrayList<String> memoryStorage;
     ArrayList<List> compactedMemoryStorage;
@@ -85,7 +88,7 @@ public class MyFrame extends JFrame implements ActionListener {
     int totalManualTimeMin;
     List<List> timeCompactMemStor;
 
-//    JTextField beginTimeEventF;
+    //    JTextField beginTimeEventF;
     List<JTextField> beginTimeEventFList;
     List<JTextField> beginTimeEventSList;
     List<JTextField> endTimeEventFList;
@@ -94,7 +97,7 @@ public class MyFrame extends JFrame implements ActionListener {
     List<JToggleButton> pmButtonList;
     List<JPanel> PmAmPanelList;
 
-// JTextField ManualEdit Panel
+    // JTextField ManualEdit Panel
     List<JToggleButton> deleteEventList;
     List<JTextField> orderNumberList;
     Boolean manualTime=false;
@@ -133,7 +136,7 @@ public class MyFrame extends JFrame implements ActionListener {
 
         int blankOccurence = 0;
         memoryStorage.add(" [en] ");
-        Boolean firstOccurence = true; 
+        Boolean firstOccurence = true;
         for (String word : memoryStorage) {
             if (word.equals(" ") || word.equals("")) {
                 blankOccurence++;
@@ -182,8 +185,8 @@ public class MyFrame extends JFrame implements ActionListener {
                         } else first = false;
                     }
                     bw.write(wordNoSpace+" ");
-                    }
-                    bw.close();
+                }
+            bw.close();
         } catch (Exception ex) {
             return;
         }
@@ -266,14 +269,14 @@ public class MyFrame extends JFrame implements ActionListener {
             deleteButtonLabel.setForeground(Color.WHITE);
             deleteButtonLabel.setFont(new Font("Times New Romans",Font.BOLD,10));
             deleteEventButton.add(deleteButtonLabel);
-            deleteEventButton.setBounds(130,5,70,20);
+            deleteEventButton.setBounds(150,5,70,20);
             deleteEventList.add(deleteEventButton);
         }
         orderNumberList = new ArrayList();
         for (int i = 1; i < compactedMemoryStorage.size() + 1; i++) {
             JTextField orderNumberButton = new JTextField();
             orderNumberButton.setName("orderNumberButton" + String.valueOf(i));
-            orderNumberButton.setBounds(75,30,40,20);
+            orderNumberButton.setBounds(90,30,40,20);
             orderNumberList.add(orderNumberButton);
         }
 
@@ -299,6 +302,7 @@ public class MyFrame extends JFrame implements ActionListener {
 
 
         String title = "";
+        Double fontSize = 0.0;
         Boolean titleBool = false;
         ArrayList<String> tempList = new ArrayList<>();
         eventsToDisplay = new TreeMap<>();
@@ -318,60 +322,51 @@ public class MyFrame extends JFrame implements ActionListener {
                 if (eventWordString.equals("[en]")) {
                     titleBool = true;
                 }
-                if (eventCreation) {
-                    if (eventWordString.equals("[time]")) {
-                        //WIP
-                    }
-                } else {
-                    if (eventWordString.equals("[en]") & !First) {
-                        tempList.add("[time]");
-                        tempList.add("");
-                        for (String el : tempList) {
-
-                        }
-                    } else {
-                        tempList.add(eventWordString);
-                        First = false;
-                    }
-
-                }
             }
             if (i >= maxDisplay & !fourEventsBool) {
                 eventsToDisplay.put(i++, controlButtonsPanel);
                 fourEventsBool = true;
             }
+            //creates an event and adds elements
             JPanel event = new JPanel();
             event.setLayout(new FlowLayout(FlowLayout.LEFT));
             event.setBackground(Color.BLUE);
 
+            //reads title to determine font size
+            if (title.length() > 15){
+                title = title.substring(0,15);
+                title += "...";
+            }
+
             if (manualEdit) {
                 JPanel orderNumberPanel = new JPanel();
-                orderNumberPanel.setBounds(60,5,70,20);
+                orderNumberPanel.setBounds(80,5,70,20);
                 orderNumberPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
                 JLabel orderNumberPanelText = new JLabel("Order Number");
                 orderNumberPanelText.setFont(new Font("Times New Roman",Font.PLAIN,10));
                 orderNumberPanel.add(orderNumberPanelText);
 
                 JPanel eventNamePanel = new JPanel();
-                eventNamePanel.setBounds(0,5,60,20);
+                eventNamePanel.setBounds(0,5,80,20);
                 eventNamePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
                 JLabel eventNamePanelLabel = new JLabel("Event Name");
                 eventNamePanelLabel.setFont(new Font("Times New Roman",Font.PLAIN,10));
                 eventNamePanel.add(eventNamePanelLabel);
-                event.setPreferredSize(new Dimension(200,60));
                 JToggleButton deleteButton = deleteEventList.get(EventIncremental);
                 event.setLayout(null);
                 JTextField orderNumberButton = orderNumberList.get(EventIncremental);
-                orderNumberButton.setPreferredSize(new Dimension(50, 20));
+                orderNumberButton.setPreferredSize(new Dimension(60, 20));
                 EventIncremental++;
 
                 JPanel eventTitlePanel = new JPanel();
-                eventTitlePanel.setPreferredSize(new Dimension(40, 30));
+                eventTitlePanel.setPreferredSize(new Dimension(50, 30));
                 JLabel eventTitle = new JLabel(title);
+
                 eventTitle.setForeground(Color.WHITE);
+                eventTitle.setFont(new Font("Times New Roman",Font.PLAIN,10));
                 eventTitlePanel.add(eventTitle);
                 eventTitlePanel.setBackground(Color.BLUE);
-                eventTitlePanel.setBounds(0,20,60,20);
+                eventTitlePanel.setBounds(0,25,85,20);
 
 
                 event.add(eventNamePanel);
@@ -379,6 +374,7 @@ public class MyFrame extends JFrame implements ActionListener {
                 event.add(orderNumberPanel);
                 event.add(deleteButton,BorderLayout.EAST);
                 event.add(orderNumberButton,BorderLayout.SOUTH);
+                event.setPreferredSize(new Dimension(220, 60));
                 eventsToDisplay.put(i, event);
             }
             if (manualTime) {
@@ -389,7 +385,7 @@ public class MyFrame extends JFrame implements ActionListener {
                 EventIncremental++;
 
                 JPanel blankSpace = new JPanel();
-                blankSpace.setPreferredSize(new Dimension(40, 20));
+                blankSpace.setPreferredSize(new Dimension(70, 20));
                 blankSpace.setBackground(Color.BLUE);
 
                 JLabel beginTime = new JLabel("Begin Time");
@@ -405,8 +401,9 @@ public class MyFrame extends JFrame implements ActionListener {
                 endTimeEventS.setPreferredSize(new Dimension(30, 20));
 
                 JPanel eventTitlePanel = new JPanel();
-                eventTitlePanel.setPreferredSize(new Dimension(40, 30));
+                eventTitlePanel.setPreferredSize(new Dimension(70, 30));
                 JLabel eventTitle = new JLabel(title);
+                eventTitle.setFont(new Font("Times New Roman",Font.PLAIN,10));
                 eventTitlePanel.add(eventTitle);
 
                 event.add(blankSpace);
@@ -420,7 +417,7 @@ public class MyFrame extends JFrame implements ActionListener {
                 event.add(endTimeEventF);
                 event.add(endTimeEventS);
 
-                event.setPreferredSize(new Dimension(200, 70));
+                event.setPreferredSize(new Dimension(220, 70));
                 eventsToDisplay.put(i, event);
 
             }
@@ -431,31 +428,31 @@ public class MyFrame extends JFrame implements ActionListener {
             }
             if (eventsToDisplay.size() > 4) {
                 for (i = 1; i < 5; i++) {
-                    manualTimeDisplay.add(eventsToDisplay.get(i));              
+                    manualTimeDisplay.add(eventsToDisplay.get(i));
                 }
             } else {
                 for (i = 1; i < eventsToDisplay.size() + 1; i++) {
-                    manualTimeDisplay.add(eventsToDisplay.get(i));             
+                    manualTimeDisplay.add(eventsToDisplay.get(i));
                 }
 
             }
         }
-            if (manualEdit) {
-                if (!fourEventsBool) {
-                    eventsToDisplay.put(++i, controlButtonsPanel);
+        if (manualEdit) {
+            if (!fourEventsBool) {
+                eventsToDisplay.put(++i, controlButtonsPanel);
+            }
+            if (eventsToDisplay.size() > 4) {
+                for (i = 1; i < 5; i++) {
+                    manualEditDisplay.add(eventsToDisplay.get(i));
                 }
-                if (eventsToDisplay.size() > 4) {
-                    for (i = 1; i < 5; i++) {
-                        manualEditDisplay.add(eventsToDisplay.get(i));              
-                    }
-                } else {
-                    for (i = 1; i < eventsToDisplay.size() + 1; i++) {
-                        manualEditDisplay.add(eventsToDisplay.get(i));              
-                    }
-
+            } else {
+                for (i = 1; i < eventsToDisplay.size() + 1; i++) {
+                    manualEditDisplay.add(eventsToDisplay.get(i));
                 }
 
             }
+
+        }
         this.revalidate();
     }
     public void AddToBasics() {
@@ -571,7 +568,7 @@ public class MyFrame extends JFrame implements ActionListener {
     }
     public void ReturnToMain(){
         this.dispose();
-        new MyFrame();
+        new ScheduleApp();
         this.revalidate();
     }
     public void LookAtSchedule() {
@@ -579,8 +576,11 @@ public class MyFrame extends JFrame implements ActionListener {
         optionPanel.remove(addToBasics);
         optionPanel.remove(createSchedule);
         //    notification for No events in Look at schedule
-        Boolean FileExists = Files.exists(Path.of("Time.txt"));
-        if (FileExists){
+        Boolean FileExists = false;
+        File timeFile = new File(TimeAssignedFile);
+        if (timeFile.exists() && !timeFile.isDirectory()) FileExists = true;
+        System.out.println(FileExists);
+        if (!FileExists){
             Error("Schedule Times Not Yet Created! \n Please Click Create A New Schedule To Set Times");
             ReturnToMain();
             return;
@@ -660,7 +660,7 @@ public class MyFrame extends JFrame implements ActionListener {
                 String line;
                 while ((line = bw.readLine()) != null) {
                     JPanel event = new JPanel();
-                    event.setPreferredSize(new Dimension(120, 100));
+                    event.setPreferredSize(new Dimension(120, 120));
                     event.setBackground(Color.GREEN);
                     event.setLayout(new FlowLayout());
 
@@ -694,7 +694,7 @@ public class MyFrame extends JFrame implements ActionListener {
                         if (EventNameBool) {
                             if (firstWord) firstWord = false;
                             else {
-                                eventNameString += (String) eventWordString;
+                                eventNameString += " " + (String) eventWordString;
                             }
                         }
                         if (EventTimeBool) {
@@ -704,11 +704,22 @@ public class MyFrame extends JFrame implements ActionListener {
                             }
                         }
                     }
+                    int blankIndex = 15;
+
+                    if (eventNameString.length() > 12){
+                        for (int i =12; i< eventNameString.length(); i++){
+                            if (String.valueOf(eventNameString.charAt(i)).isBlank()) blankIndex = i;
+                        }
+                        if (eventNameString.length()>25){
+                            eventNameString = eventNameString.substring(0,25) + "...";
+                        }
+                    }
 
                     eventInfoList.add(eventInfoString);
-                    JLabel eventName = new JLabel(eventNameString);
-                    eventName.setFont(new Font("Times New Roman", Font.BOLD, 20));
-                    eventName.setPreferredSize(new Dimension(80, 20));
+                    JLabel eventName = new JLabel("<html>" + eventNameString + "</html>");
+                    eventName.setFont(new Font("Times New Roman", Font.BOLD, 14));
+                    eventName.setVerticalAlignment(JLabel.TOP);
+                    eventName.setPreferredSize(new Dimension(90, 40));
 
                     eventSplit = eventTimeString.split("-");
                     if (Integer.valueOf(eventSplit[0]) > 12) {
@@ -775,13 +786,9 @@ public class MyFrame extends JFrame implements ActionListener {
                 eventDisplayPanel.add(eventMapName.get(i));
             }
 
-                }
+        }
 
-            }
-
-
-
-
+    }
     public static String CheckTime(String[] array,Boolean Increase,Boolean Military){
         // CheckTime(tempArray,true,false);
         if (!Military) {
@@ -1148,7 +1155,7 @@ public class MyFrame extends JFrame implements ActionListener {
             }
 
 
-    }catch( Exception exception) {
+        }catch( Exception exception) {
 
         }
     }
@@ -1427,7 +1434,7 @@ public class MyFrame extends JFrame implements ActionListener {
     public void Error(String message){
         JOptionPane.showMessageDialog(this,message);
     }
-    public MyFrame() {
+    ScheduleApp() {
         //          Memory Reader
         ReadMemory();
 
@@ -1672,10 +1679,7 @@ public class MyFrame extends JFrame implements ActionListener {
         }
         this.revalidate();
 
-        }
-
-
-
+    }
     public class MyTextfield extends JTextField {
         MyTextfield(int x, int y, int width, int height) {
             this.setPreferredSize(new Dimension(width, height));
@@ -1685,6 +1689,5 @@ public class MyFrame extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String args[]){new MyFrame();}
+    public static void main(String args[]){new ScheduleApp();}
 }
-

@@ -10,12 +10,15 @@ public class FrameManager {
 
     public static JFrame getFrame() {
         if (ScheduleAppFrame == null) {
+            ScheduleAppFrame = new JFrame();
             ScheduleAppFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             ScheduleAppFrame.setPreferredSize(new Dimension(FRAME_WIDTH,FRAME_HEIGHT));
             ScheduleAppFrame.setLayout(null);
             ScheduleAppFrame.pack();
             ScheduleAppFrame.setResizable(false);           //change
             ScheduleAppFrame.setVisible(true);
+            ScheduleAppFrame.add(OptionPanel.getOptionPanel());
+            ScheduleAppFrame.revalidate();
         }
         return ScheduleAppFrame;
     }

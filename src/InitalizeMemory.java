@@ -8,8 +8,6 @@ public class InitalizeMemory {
     private String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
     private String basicsFileLocation = fileLocation + "//Basics.txt";
     private Boolean locationError;
-
-
     private static List<String> memoryStorage;
     private static ArrayList<List> compactedMemoryStorage;
     private int eventNum;

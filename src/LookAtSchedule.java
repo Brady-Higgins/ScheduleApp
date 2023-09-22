@@ -20,6 +20,7 @@ public class LookAtSchedule {
     public LookAtSchedule(){
         OptionPanel.ReturnToMainOnly();
         Boolean fileExists = CheckTimeFileExists();
+        if (fileExists){
 
         int startZeroIncrem =0;
         for (int i = 1; i< compactMemSize; i++){
@@ -110,12 +111,12 @@ public class LookAtSchedule {
                     }
                     int blankIndex = 15;
 
-                    if (eventNameString.length() > 12){
-                        for (int i =12; i< eventNameString.length(); i++){
+                    if (eventNameString.length() > 12) {
+                        for (int i = 12; i < eventNameString.length(); i++) {
                             if (String.valueOf(eventNameString.charAt(i)).isBlank()) blankIndex = i;
                         }
-                        if (eventNameString.length()>25){
-                            eventNameString = eventNameString.substring(0,25) + "...";
+                        if (eventNameString.length() > 25) {
+                            eventNameString = eventNameString.substring(0, 25) + "...";
                         }
                     }
 
@@ -158,18 +159,17 @@ public class LookAtSchedule {
             int eventsDisplayed = -1;
             for (int i = 0; i < eventMapName.lastKey() + 1; i++) {
 
-                if (eventMapName.get(i) == null){
+                if (eventMapName.get(i) == null) {
                     continue;
                 }
-                if (eventsDisplayed == eventMapName.lastKey()){
+                if (eventsDisplayed == eventMapName.lastKey()) {
                     break;
-                }
-                else {
+                } else {
                     eventsDisplayed += 1;
                 }
                 eventDisplayPanel.add(eventMapName.get(i));
             }
-
+        }
         }
     }
     private Boolean CheckTimeFileExists(){

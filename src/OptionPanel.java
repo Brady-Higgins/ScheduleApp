@@ -58,6 +58,11 @@ public class OptionPanel{
         optionPanel.remove(addToBasics);
         optionPanel.remove(createSchedule);
     }
+    public static void RestoreButtons(){
+        optionPanel.add(addToBasics,0);
+        optionPanel.add(lookAtSchedule,1);
+        optionPanel.add(createSchedule,2);
+    }
 
 }
 

@@ -1,5 +1,6 @@
 
 import javax.swing.*;
+import javax.swing.text.html.Option;
 import java.awt.*;
 public class FrameManager {
     private static JFrame ScheduleAppFrame;
@@ -9,7 +10,7 @@ public class FrameManager {
     private FrameManager() {}
 
     public static JFrame getFrame() {
-        if (ScheduleAppFrame == null) {
+        if (ScheduleAppFrame == null || FrameController.checkIfFrameDisposed()) {
             ScheduleAppFrame = new JFrame();
             ScheduleAppFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             ScheduleAppFrame.setPreferredSize(new Dimension(FRAME_WIDTH,FRAME_HEIGHT));

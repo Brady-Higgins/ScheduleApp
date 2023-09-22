@@ -91,6 +91,8 @@ public class CreateSchedule implements ActionListener {
         endPM.addActionListener(this);
         FrameManager.getFrame().add(displayCreate);
         FrameManager.getFrame().add(lazySusanDisplay);
+        FrameManager.getFrame().revalidate();
+        FrameManager.getFrame().repaint();
     }
     CreateSchedule() {
         OptionPanel.ReturnToMainOnly();

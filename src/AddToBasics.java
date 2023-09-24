@@ -18,9 +18,9 @@ public class AddToBasics implements ActionListener {
     JTextArea eventInfoText;
     JTextField eventName;
     JPanel panelNoEvents;
-    JLabel notifText;
+
     ArrayList<List> compactedMemoryStorage = InitalizeMemory.getCompactMem();
-    final int compactMemSize = InitalizeMemory.getCompactMem().size() + 1;
+    final int compactMemSize = InitalizeMemory.getCompactMem().size();
     JFrame mainFrame = FrameManager.getFrame();
     private String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
     private String basicsFileLocation = fileLocation + "//Basics.txt";
@@ -59,7 +59,7 @@ public class AddToBasics implements ActionListener {
         // Text field for order number
         orderNumber = new JTextField(10);
         final int lastElm = 1;
-        if (compactMemSize!=lastElm) orderNumberPanel.add(orderNumber);
+        if (compactMemSize+1!=lastElm) orderNumberPanel.add(orderNumber);
         else{
             JPanel orderNumber1 = new JPanel();
             orderNumber1.setPreferredSize(new Dimension(100,30));
@@ -109,15 +109,6 @@ public class AddToBasics implements ActionListener {
         basicsNotif.setPreferredSize(new Dimension(200, 60));
         basicsNotif.setLayout(new BorderLayout());
 
-        notifText = new JLabel("Please Answer All");
-        notifText.setForeground(Color.RED);
-        notifText.setHorizontalAlignment(SwingConstants.CENTER);
-        notifText.setFont(new Font("Times New Roman",Font.BOLD,16));
-
-        notifText.setVisible(false);
-        basicsNotif.add(notifText);
-
-
         //Adding each component to basics panel
         addToBasicsPanel.add(orderNumberPanel);
         addToBasicsPanel.add(eventNamePanel);
@@ -138,6 +129,7 @@ public class AddToBasics implements ActionListener {
         int eventsDeleted =0;
         for (int i =0; i<orderNumberList.size(); i++){
             if (deleteEventList.get(i).getModel().isSelected()){
+                System.out.println("rrrrrr");
                 compactedMemoryStorage.remove(i);
                 eventsDeleted+=1;
             }
@@ -184,60 +176,73 @@ public class AddToBasics implements ActionListener {
             return;
         }
     }
+    private Boolean checkNumString(String s){
+        try {
+            int numS = Integer.valueOf(s);
+            if (numS <= compactMemSize+1 & numS > 0) {return true;}
+            else return false;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+
     @Override
     public void actionPerformed(ActionEvent e ){
         if (e.getSource()==enterButton){
-            if ((orderNumber.getText().isEmpty() & compactedMemoryStorage.size() == 1) || eventInfoText.getText().isEmpty() || eventName.getText().isEmpty()) {
-                notifText.setVisible(true);
+            if (( compactedMemoryStorage.size() == 1) || eventInfoText.getText().isEmpty() || eventName.getText().isEmpty()) {
+                FrameController.ErrorMessage("Please Complete All Fields!");
             } else {
-                notifText.setVisible(false);
-                //Write to Basics.txt
-                List<String> memoryStorage = InitalizeMemory.getMemStorage();
-                if (compactedMemoryStorage.size() >= 1) {
-                    memoryStorage.remove(memoryStorage.size() - 1);              //brute force error handeling. Actual Logic should be used to fix it later. (Read Mem)
-                }
-                memoryStorage.add(" [en] ");
-                memoryStorage.add(eventName.getText()); //event name
-                memoryStorage.add(" [ei] ");
-                memoryStorage.add(eventInfoText.getText());   //event info
-                memoryStorage.add(" [Time] ");
-                memoryStorage.add("Pass");
-                String orderNumberVal = "1";
-                if (compactedMemoryStorage.size() != 0) {
-                    orderNumberVal = orderNumber.getText();
-                }
-                if (Integer.valueOf(orderNumberVal) <= compactedMemoryStorage.size()) {
-                    InitalizeMemory.updateMemory(memoryStorage);
-                    compactedMemoryStorage = InitalizeMemory.CompactMem();
-                    ReorderList(String.valueOf(compactedMemoryStorage.size()), orderNumber.getText());
-                } else {
-                    if (memoryStorage.get(0).isBlank()){
-                        memoryStorage.remove(0);                                                //more brute force
-                    }
-                    if (memoryStorage.get(0).equals(" [en] ") & memoryStorage.get(1).equals(" [en] "))
-                        memoryStorage.remove(0);
-                    Boolean first = true;
-                    try {
-                        BufferedWriter bw = new BufferedWriter(
-                                new FileWriter(basicsFileLocation));
-                        for (String word : memoryStorage) {
-                            String wordNoSpace = word.replaceAll("\\s", "");
-                            if (wordNoSpace.replaceAll("\\s", "").equals("[en]")) {
-                                if (!first) {
-                                    bw.newLine();
-                                } else first = false;
-                            }
-                            bw.write(word);
+                String orderNumberValString = orderNumber.getText();
+                int orderNumberVal = 1;
+                if (!checkNumString(orderNumberValString)) {
+                    orderNumberVal= compactMemSize+1;
+                } else orderNumberVal = Integer.valueOf(orderNumberValString);
+
+                    //Write to Basics.txt
+                    List<String> memoryStorage = InitalizeMemory.getMemStorage();
+                    memoryStorage.add(" [en] ");
+                    memoryStorage.add(eventName.getText()); //event name
+                    memoryStorage.add(" [ei] ");
+                    memoryStorage.add(eventInfoText.getText());   //event info
+                    memoryStorage.add(" [Time] ");
+                    memoryStorage.add("Pass");
+                    if (orderNumberVal < compactMemSize) {
+                        InitalizeMemory.updateMemory(memoryStorage);
+                        compactedMemoryStorage = InitalizeMemory.CompactMem();
+                        ReorderList(String.valueOf(compactedMemoryStorage.size()), orderNumber.getText());
+                    } else {
+                        if (memoryStorage.get(0).isBlank()) {
+                            memoryStorage.remove(0);                                                //more brute force
                         }
-                        bw.close();
-                    } catch (Exception ex) {
-                        return;
+                        if (memoryStorage.get(0).equals(" [en] ") & memoryStorage.get(1).equals(" [en] "))
+                            memoryStorage.remove(0);
+                        Boolean first = true;
+                        try {
+                            BufferedWriter bw = new BufferedWriter(
+                                    new FileWriter(basicsFileLocation));
+                            for (String word : memoryStorage) {
+                                String wordNoSpace = word.replaceAll("\\s", "");
+                                if (wordNoSpace.replaceAll("\\s", "").equals("[en]")) {
+                                    if (!first) {
+                                        bw.newLine();
+                                    } else first = false;
+                                }
+                                bw.write(word);
+                            }
+                            bw.close();
+
+                        } catch (Exception ex) {
+
+                        }
                     }
 
-                }
+                    }
+            FrameController.ReturnToMain();
+            AddToBasics addToBasics = new AddToBasics();
+            return;
             }
-        }
-
+        FrameController.ErrorMessage("Input Invalid");
     }
     private static FrameLazySusanDisplay FrameLazySusanInstance = new FrameLazySusanDisplay();
 }

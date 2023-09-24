@@ -14,11 +14,12 @@ public class FrameLazySusanDisplay implements ActionListener {
     private JButton nextPage;
     private Boolean classManualEdit;
     private Boolean classManualTime;
-    private ArrayList<JToggleButton> deleteEventList;
-    private ArrayList<JTextField> orderNumberList;
+    private static ArrayList<JToggleButton> deleteEventList = new ArrayList<>();
+    private static ArrayList<JTextField> orderNumberList = new ArrayList<>();
     private JPanel controlButtonsPanel;
+
     ArrayList<List> compactedMemoryStorage = InitalizeMemory.getCompactMem();
-    final int compactMemSize = InitalizeMemory.getCompactMem().size() + 1;
+    final int compactMemSize = compactedMemoryStorage.size();
     private static List<JTextField> endTimeEventFList;
     static List<JTextField> beginTimeEventFList;
     static List<JTextField> beginTimeEventSList;
@@ -27,6 +28,9 @@ public class FrameLazySusanDisplay implements ActionListener {
     TreeMap<Integer,JPanel> eventsToDisplay;
     JPanel manualEditDisplay;
     JPanel manualTimeDisplay;
+    Integer manualDisplayNumberOfEvents=5;
+    Boolean First = true;
+    int IterationsLazySusan = 1;
 
 
     private JPanel CreateManualTimeDisplay() {
@@ -50,25 +54,25 @@ public class FrameLazySusanDisplay implements ActionListener {
         manualTimeDisplay.add(manualTimeTitle);
 
         beginTimeEventFList = new ArrayList();
-        for (int i = 1; i < compactMemSize; i++) {
+        for (int i = 0; i < compactMemSize; i++) {
             JTextField beginTimeEventF = new JTextField();
             beginTimeEventF.setName("beginTimeEventF" + String.valueOf(i));
             beginTimeEventFList.add(beginTimeEventF);
         }
         beginTimeEventSList = new ArrayList();
-        for (int i = 1; i < compactMemSize; i++) {
+        for (int i = 0; i < compactMemSize; i++) {
             JTextField beginTimeEventS = new JTextField();
             beginTimeEventS.setName("beginTimeEventS" + String.valueOf(i));
             beginTimeEventSList.add(beginTimeEventS);
         }
         endTimeEventFList = new ArrayList();
-        for (int i = 1; i < compactMemSize; i++) {
+        for (int i = 0; i < compactMemSize; i++) {
             JTextField endTimeEventF = new JTextField();
             endTimeEventF.setName("endTimeEventF" + String.valueOf(i));
             endTimeEventFList.add(endTimeEventF);
         }
         endTimeEventSList = new ArrayList();
-        for (int i = 1; i < compactMemSize; i++) {
+        for (int i = 0; i < compactMemSize; i++) {
             JTextField endTimeEventS = new JTextField();
             endTimeEventS.setName("endTimeEventS" + String.valueOf(i));
             endTimeEventSList.add(endTimeEventS);
@@ -102,7 +106,7 @@ public class FrameLazySusanDisplay implements ActionListener {
 
 
         deleteEventList = new ArrayList();
-        for (int i = 1; i < compactMemSize; i++) {
+        for (int i = 0; i < compactMemSize; i++) {
             JToggleButton deleteEventButton = new JToggleButton();
             deleteEventButton.setName("deleteEventButton" + String.valueOf(i));
             deleteEventButton.setBackground(Color.RED);
@@ -114,7 +118,7 @@ public class FrameLazySusanDisplay implements ActionListener {
             deleteEventList.add(deleteEventButton);
         }
         orderNumberList = new ArrayList();
-        for (int i = 1; i < compactMemSize; i++) {
+        for (int i = 0; i < compactMemSize; i++) {
             JTextField orderNumberButton = new JTextField();
             orderNumberButton.setName("orderNumberButton" + String.valueOf(i));
             orderNumberButton.setBounds(90, 30, 40, 20);
@@ -160,11 +164,11 @@ public class FrameLazySusanDisplay implements ActionListener {
         Boolean fourEventsBool = false;
         Boolean First = true;
         int EventIncremental = 0;
+        System.out.println(compactedMemoryStorage);
         for (List listItem : compactedMemoryStorage) {
             title = "";
             i++;
             for (Object eventWord : listItem) {
-
                 String eventWordString = String.valueOf(eventWord).replaceAll("\\s", "");
                 if (eventWordString.equals("[ei]")) titleBool = false;
                 if (titleBool) title += (" " + eventWordString);
@@ -187,7 +191,7 @@ public class FrameLazySusanDisplay implements ActionListener {
                 title += "...";
             }
 
-            if (manualEdit) {
+            if (classManualEdit) {
                 JPanel orderNumberPanel = new JPanel();
                 orderNumberPanel.setBounds(80, 5, 70, 20);
                 orderNumberPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
@@ -226,7 +230,7 @@ public class FrameLazySusanDisplay implements ActionListener {
                 event.setPreferredSize(new Dimension(220, 60));
                 eventsToDisplay.put(i, event);
             }
-            if (manualTime) {
+            if (classManualTime) {
                 JTextField beginTimeEventF = beginTimeEventFList.get(EventIncremental);
                 JTextField beginTimeEventS = beginTimeEventSList.get(EventIncremental);
                 JTextField endTimeEventF = endTimeEventFList.get(EventIncremental);
@@ -267,6 +271,7 @@ public class FrameLazySusanDisplay implements ActionListener {
                 event.add(endTimeEventS);
 
                 event.setPreferredSize(new Dimension(220, 70));
+
                 eventsToDisplay.put(i, event);
 
             }
@@ -301,12 +306,13 @@ public class FrameLazySusanDisplay implements ActionListener {
                 }
 
             }
-
         }
-        if (classManualTime) {
+        if (classManualTime){
             return manualTimeDisplay;
         }
-        else{return manualEditDisplay;}
+        else{
+            return manualEditDisplay;
+        }
 
     }
     public static List<JTextField> getListOfBeginningTimesHour(){
@@ -329,64 +335,77 @@ public class FrameLazySusanDisplay implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e ){
-        String buttonCommand = e.getActionCommand();
-        if (buttonCommand.equals("nextPage")){
-            int manualDisplayNumberOfEvents=5;
-            Boolean First = true;
+        if (e.getSource()==nextPage){
+
+
             if (classManualTime) {
-                int sizeDifference = eventsToDisplay.size() - manualDisplayNumberOfEvents;
-                if (!First) manualDisplayNumberOfEvents += 1;
-                if (sizeDifference <= 0) {
-                    FrameController.ErrorMessage("No more Events!");
+
+                final int nonUserEvents = 1;
+                int maxCycles = (int)Math.ceil((eventsToDisplay.size() - nonUserEvents) / 3);
+                int lastCycleEventsToDisplay = (eventsToDisplay.size() - nonUserEvents) % 3;
+                if (IterationsLazySusan > maxCycles) {
+                    FrameController.ErrorMessage("No More Events To Display");
                     return;
                 }
-                if (sizeDifference > 3) sizeDifference = 3;
-
-                for (int i = 0; 3 > i; i++) {
+                for (int i = 0; i <3; i++){
                     manualTimeDisplay.remove(1);
                 }
-                int indexVal = 1;
-                for (int i = 4; (i > 1); i--) {
-                    if (manualDisplayNumberOfEvents > eventsToDisplay.size()) {
+                if (IterationsLazySusan == maxCycles) {
+                    int indexVal = 1;
+                    for (int i = 0; i < lastCycleEventsToDisplay; i++) {
+                        manualTimeDisplay.add(eventsToDisplay.get(manualDisplayNumberOfEvents), indexVal);
+                        indexVal++;
                         manualDisplayNumberOfEvents++;
-                        return;
                     }
-                    manualTimeDisplay.add(eventsToDisplay.get(manualDisplayNumberOfEvents), indexVal);
-                    indexVal++;
-                    manualDisplayNumberOfEvents++;
+                } else {
+                    int indexVal = 1;
+                    for (int i = 0; i < 3; i++) {
+                        manualTimeDisplay.add(eventsToDisplay.get(manualDisplayNumberOfEvents), indexVal);
+                        indexVal++;
+                        manualDisplayNumberOfEvents++;
+                    }
                 }
-                manualDisplayNumberOfEvents--;
-                First = false;
+                manualTimeDisplay.revalidate();
+                manualTimeDisplay.repaint();
+
             }
             if (classManualEdit) {
-                int sizeDifference = eventsToDisplay.size() - manualDisplayNumberOfEvents;
-                if (!First) manualDisplayNumberOfEvents += 1;
-                if (sizeDifference <= 0) {
-                    FrameController.ErrorMessage("No more Events!");
+                final int nonUserEvents = 1;
+                int maxCycles = (int)Math.ceil((eventsToDisplay.size() - nonUserEvents) / 3);
+                int lastCycleEventsToDisplay = (eventsToDisplay.size() - nonUserEvents) % 3;
+                if (IterationsLazySusan > maxCycles) {
+                    FrameController.ErrorMessage("No More Events To Display");
                     return;
                 }
-                if (sizeDifference > 3) sizeDifference = 3;
-
-                for (int i = 0; 3 > i; i++) {
+                for (int i = 0; i <3; i++){
                     manualEditDisplay.remove(1);
                 }
-                int indexVal = 1;
-                for (int i = 4; (i > 1); i--) {
-                    if (manualDisplayNumberOfEvents > eventsToDisplay.size()) {
+                if (IterationsLazySusan == maxCycles) {
+                    int indexVal = 1;
+                    for (int i = 0; i < lastCycleEventsToDisplay; i++) {
+                        manualEditDisplay.add(eventsToDisplay.get(manualDisplayNumberOfEvents), indexVal);
+                        indexVal++;
                         manualDisplayNumberOfEvents++;
-                        return;
                     }
-                    manualEditDisplay.add(eventsToDisplay.get(manualDisplayNumberOfEvents), indexVal);
-                    indexVal++;
-                    manualDisplayNumberOfEvents++;
+                } else {
+                    int indexVal = 1;
+                    for (int i = 0; i < 3; i++) {
+                        manualEditDisplay.add(eventsToDisplay.get(manualDisplayNumberOfEvents), indexVal);
+                        indexVal++;
+                        manualDisplayNumberOfEvents++;
+                    }
                 }
-                manualDisplayNumberOfEvents--;
+                manualEditDisplay.revalidate();
+                manualEditDisplay.repaint();
             }
-            First = false;
+            IterationsLazySusan++;
+            FrameManager.getFrame().revalidate();
+            FrameManager.getFrame().repaint();
+            }
 
-        }
 
-        if (buttonCommand.equals("enterManualTime")){
+
+        if (e.getSource()==enterManualEvent){
             if (classManualTime){
                 CreateSchedule createScheduleInstance = OptionPanel.getCreateSchedule();
                 createScheduleInstance.AssignScheduleValues();

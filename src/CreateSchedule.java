@@ -184,7 +184,7 @@ public class CreateSchedule implements ActionListener {
         //Runs after collecting values from each event and assigns times to each event
 
 
-        List<List> timeCompactMemStor = new TimeAssignmentAlgorithim().TimeAssignmentAlgorithim(totalManualEvents,totalManualTimeHour,totalManualTimeMin);
+        List<List> timeCompactMemStor = new TimeAssignmentAlgorithim().TimeAssignmentAlgorithim(totalManualEvents,totalManualTimeHour,totalManualTimeMin,totalEventTimesList);
 
         //write to a time file
 
@@ -238,6 +238,13 @@ public class CreateSchedule implements ActionListener {
             endAM.removeActionListener(this);
             endPM.removeActionListener(this);
         }
+        if (e.getSource()==enter){
+            if (!(beginTimeHour.getText().equals("") || beginTimeMin.getText().equals("") || endTimeHour.getText().equals("") || endTimeMin.getText().equals(""))) {
+                if (!(beginTimePMorAM.equals("") || endTimePMorAM.equals(""))) {
+                    mainTimeComponent = true;
+                } else FrameController.ErrorMessage("Indicate PM or AM");
+            }else FrameController.ErrorMessage("Fill Every Box");
+        }
 
 
     }
@@ -274,6 +281,7 @@ public class CreateSchedule implements ActionListener {
     public static Boolean getMainTimeComponent(){
         return mainTimeComponent;
     }
+    public static void setMainTimeComponent(Boolean bool) {mainTimeComponent = bool;}
     public static int getBeginTimeHour(){
         return Integer.valueOf(beginTimeHour.getText());
     }
@@ -286,6 +294,7 @@ public class CreateSchedule implements ActionListener {
     public static int getEndTimeMin(){
         return Integer.valueOf(endTimeMin.getText());
     }
+
     public String getBeginTimePMorAM() {
         return beginTimePMorAM;
     }

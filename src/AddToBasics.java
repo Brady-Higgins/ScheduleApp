@@ -127,11 +127,13 @@ public class AddToBasics implements ActionListener {
         List<JTextField> orderNumberList = FrameLazySusanInstance.getOrderNumberChangeList();
         List<JToggleButton> deleteEventList = FrameLazySusanInstance.getDeleteEventList();
         int eventsDeleted =0;
-        for (int i =0; i<orderNumberList.size(); i++){
+        int orderNumListSize = orderNumberList.size();
+        for (int i =0; i<orderNumListSize; i++){
             if (deleteEventList.get(i).getModel().isSelected()){
-                System.out.println("rrrrrr");
                 compactedMemoryStorage.remove(i);
                 eventsDeleted+=1;
+                orderNumListSize--;
+                i--;
             }
             else if (CreateSchedule.EvaluateNum(orderNumberList.get(i).getText(),compactedMemoryStorage.size())) {
                 String newNum = orderNumberList.get(i).getText();
@@ -150,7 +152,11 @@ public class AddToBasics implements ActionListener {
     public void ReorderList(String originalNum, String newNum){
         //reorders the values on Basics.txt based on Compact Mem. If originalNum = newNum it's used to write to memory
         //Rearranges Compacted memory
+
+        compactedMemoryStorage = InitalizeMemory.getCompactMem();
+
         if (!originalNum.equals(newNum)) {
+            System.out.println(compactedMemoryStorage);
             List<String> tempCopy = compactedMemoryStorage.get(Integer.valueOf(originalNum) - 1);
             compactedMemoryStorage.remove(Integer.valueOf(originalNum) - 1);
             compactedMemoryStorage.add(Integer.valueOf(newNum) - 1, tempCopy);
@@ -190,7 +196,7 @@ public class AddToBasics implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e ){
         if (e.getSource()==enterButton){
-            if (( compactedMemoryStorage.size() == 1) || eventInfoText.getText().isEmpty() || eventName.getText().isEmpty()) {
+            if (eventInfoText.getText().isEmpty() || eventName.getText().isEmpty()) {
                 FrameController.ErrorMessage("Please Complete All Fields!");
             } else {
                 String orderNumberValString = orderNumber.getText();

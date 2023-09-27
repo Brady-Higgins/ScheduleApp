@@ -409,10 +409,12 @@ public class FrameLazySusanDisplay implements ActionListener {
             if (classManualTime){
                 CreateSchedule createScheduleInstance = OptionPanel.getCreateSchedule();
                 createScheduleInstance.AssignScheduleValues();
+                FrameController.ReturnToMain();
             }
             if (classManualEdit) {
                 AddToBasics addToBasicsInstance = OptionPanel.getAddToBasics();
                 addToBasicsInstance.EnterManualEdit();
+                FrameController.ReturnToMain();
             }
         }
 

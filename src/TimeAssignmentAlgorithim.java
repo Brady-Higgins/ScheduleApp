@@ -5,13 +5,15 @@ import java.util.stream.Collectors;
 public class TimeAssignmentAlgorithim {
     private List<List> compactMemoryStorage = InitalizeMemory.getCompactMem();
     private int totalManualEvents;
+    List<String> totalEventTimesList;
 
-    List<String> totalEventTimesList = new ArrayList<>();
+
 
 
     private List<List> compactMemStorage = InitalizeMemory.getCompactMem();
     private List<List> timeCompactMemStor = InitalizeMemory.getCompactMem().stream().collect(Collectors.toList());
-    public List<List> TimeAssignmentAlgorithim(int totalManualEvents, int totalManualTimeHour, int totalManualTimeMin){
+    public List<List> TimeAssignmentAlgorithim(int totalManualEvents, int totalManualTimeHour, int totalManualTimeMin,List<String>eventTimes){
+        totalEventTimesList = eventTimes;
         int nonManualEvents = InitalizeMemory.getCompactMem().size() - totalManualEvents;
         int[] finalTimeArray = CreateSchedule.getTimeFrame();
         int nonManualTimeHour = finalTimeArray[0] - totalManualTimeHour;
@@ -47,13 +49,14 @@ public class TimeAssignmentAlgorithim {
         int nonManualEventsRan=0;
 
 
-        BestFitList(averageTimeArray);
+        compactMemStorage = BestFitList(averageTimeArray);
         for (int j = 0; j<compactMemStorage.size(); j++) {
             List<String> list = compactMemStorage.get(j);
             if (currentTimeMin > 59) {
                 currentTimeMin = 0;
                 currentTimeHour++;
             }
+            System.out.println(totalEventTimesList);
             for (int i = 0; i < list.size(); i++) {
                 String eventWordString = String.valueOf(list.get(i)).replaceAll("\\s", "");             //rewrite to reading just last value of list
                 if (totalEventTimesList.get(eventNum).equals("Pass")) {

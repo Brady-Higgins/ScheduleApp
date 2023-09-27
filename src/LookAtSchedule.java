@@ -12,8 +12,8 @@ public class LookAtSchedule {
     private String TimeAssignedFile = fileLocation + "//Time.txt";
     private ArrayList<List> compactMem = InitalizeMemory.getCompactMem();
     private int compactMemSize = compactMem.size() + 1;
-    private ArrayList<JButton> infoButtonList;
-    JPanel eventDisplayPanel;
+    private ArrayList<JButton> infoButtonList = new ArrayList<>();
+    JPanel eventDisplayPanel = new JPanel();
     List<String> eventInfoList = new ArrayList<>();
 
 
@@ -21,20 +21,19 @@ public class LookAtSchedule {
         OptionPanel.ReturnToMainOnly();
         Boolean fileExists = CheckTimeFileExists();
         if (fileExists){
-
-        int startZeroIncrem =0;
-        for (int i = 1; i< compactMemSize; i++){
-            JButton eventButton = new JButton("i");
-            eventButton.setName("InfoButton" + String.valueOf(startZeroIncrem));
-            eventButton.setBackground(Color.white);
-            eventButton.putClientProperty("index", i);
-            eventButton.addActionListener(e -> {
-                int buttonIndex = (int) eventButton.getClientProperty("index");
-                FrameController.ErrorMessage(eventInfoList.get(buttonIndex));
-            });
-            startZeroIncrem++;
-            infoButtonList.add(eventButton);
-        }
+            int startZeroIncrem =0;
+            for (int i = 1; i< compactMemSize; i++){
+                JButton eventButton = new JButton("i");
+                eventButton.setName("InfoButton" + String.valueOf(startZeroIncrem));
+                eventButton.setBackground(Color.white);
+                eventButton.putClientProperty("index", startZeroIncrem);
+                eventButton.addActionListener(e -> {
+                    int buttonIndex = (int) eventButton.getClientProperty("index");
+                    FrameController.ErrorMessage(eventInfoList.get(buttonIndex));
+                });
+                startZeroIncrem++;
+                infoButtonList.add(eventButton);
+            }
         int eventNum = 0;
         if (compactMemSize == 1) {
             FrameController.ErrorMessage("No Events To Display!");
@@ -169,7 +168,11 @@ public class LookAtSchedule {
                 }
                 eventDisplayPanel.add(eventMapName.get(i));
             }
+            FrameManager.getFrame().add(eventDisplayPanel);
+            FrameManager.getFrame().revalidate();
+            FrameManager.getFrame().repaint();
         }
+
         }
     }
     private Boolean CheckTimeFileExists(){

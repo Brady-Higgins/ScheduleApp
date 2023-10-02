@@ -229,11 +229,12 @@ public class AddToBasics implements ActionListener {
                                     new FileWriter(basicsFileLocation));
                             for (String word : memoryStorage) {
                                 String wordNoSpace = word.replaceAll("\\s", "");
-                                if (wordNoSpace.replaceAll("\\s", "").equals("[en]")) {
+                                if (wordNoSpace.equals("[en]")) {
                                     if (!first) {
                                         bw.newLine();
                                     } else first = false;
                                 }
+
                                 bw.write(word);
                             }
                             bw.close();

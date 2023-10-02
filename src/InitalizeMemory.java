@@ -42,7 +42,8 @@ public class InitalizeMemory {
             String line;
             while((line = bw.readLine()) != null){
                 for (String s:line.split(" ")) {
-                    memoryStorage.add((" " + s));
+                    String stringSNoSpace = s.replaceAll("\\s", "");
+                    memoryStorage.add((" " +stringSNoSpace));
                 }
             }
             bw.close();
@@ -55,6 +56,8 @@ public class InitalizeMemory {
     }
     public static ArrayList<List> CompactMem(){
         List<String> memoryStorageClone = memoryStorage.stream().collect(Collectors.toList());
+        System.out.println("-------------------------");
+        System.out.println(memoryStorageClone);
         if (memoryStorageClone.size()==0) return new ArrayList<List>();
         //compacts memory to lists within lists
         List<String> temp = new ArrayList<String>();
@@ -84,7 +87,7 @@ public class InitalizeMemory {
             }
 
         }
-//        compactedMemoryStorage.remove(compactedMemoryStorage.size()-1);         //fix
+        System.out.println(compactedMemoryStorage);
     return compactedMemoryStorage;
     }
 

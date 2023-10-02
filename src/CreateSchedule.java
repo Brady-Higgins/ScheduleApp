@@ -191,6 +191,7 @@ public class CreateSchedule implements ActionListener {
         try {
             BufferedWriter bw = new BufferedWriter(
                     new FileWriter(TimeAssignedFile));
+            System.out.println(timeCompactMemStor);
             for (List list : timeCompactMemStor) {
                 for (Object val : list) {
                     String word = String.valueOf(val);

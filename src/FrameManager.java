@@ -1,6 +1,5 @@
 
 import javax.swing.*;
-import javax.swing.text.html.Option;
 import java.awt.*;
 public class FrameManager {
     private static JFrame ScheduleAppFrame;
@@ -16,38 +15,12 @@ public class FrameManager {
             ScheduleAppFrame.setPreferredSize(new Dimension(FRAME_WIDTH,FRAME_HEIGHT));
             ScheduleAppFrame.setLayout(null);
             ScheduleAppFrame.pack();
-            ScheduleAppFrame.setResizable(false);           //change
+            ScheduleAppFrame.setResizable(false);
+            ScheduleAppFrame.setLocation(FrameController.getCurrentScreenLocation());
             ScheduleAppFrame.setVisible(true);
             ScheduleAppFrame.add(OptionPanel.getOptionPanel());
             ScheduleAppFrame.revalidate();
         }
         return ScheduleAppFrame;
-    }
-
-    public static void addComponent(JComponent component) {
-        getFrame().add(component);
-        getFrame().repaint();
-    }
-
-    public static void removeComponent(JComponent component) {
-        getFrame().remove(component);
-        getFrame().repaint();
-    }
-    public static void changeComponentVisibility(JComponent component,Boolean visble){
-        //Look at later
-        getFrame().add(component);
-        component.setVisible(visble);
-    }
-
-    public static void showFrame() {
-        getFrame().pack();
-        getFrame().setVisible(true);
-    }
-
-    public static void hideFrame() {
-        getFrame().setVisible(false);
-    }
-    public static void refreshFrame(){
-
     }
 }

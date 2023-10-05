@@ -1,36 +1,30 @@
-
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class AddToBasics implements ActionListener {
-    JLabel notificationNoEvents;
     JPanel addToBasicsPanel;
     JTextField orderNumber;
     JButton enterButton;
     JTextArea eventInfoText;
     JTextField eventName;
-    JPanel panelNoEvents;
 
-    ArrayList<List> compactedMemoryStorage = InitalizeMemory.getCompactMem();
-    final int compactMemSize = InitalizeMemory.getCompactMem().size();
+    List<List<String>> compactedMemoryStorage = InitializeMemory.getCompactMem();
+    final int compactMemSize = InitializeMemory.getCompactMem().size();
     JFrame mainFrame = FrameManager.getFrame();
-    private String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
-    private String basicsFileLocation = fileLocation + "//Basics.txt";
+    private final String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
+    private final String basicsFileLocation = fileLocation + "//Basics.txt";
     AddToBasics(){
        CreateGUI();
     }
     public void CreateGUI() {
         OptionPanel.ReturnToMainOnly();
 
-        final Boolean manualEdit = true;
+        final boolean manualEdit = true;
         JPanel lazySusanDisplay = new FrameLazySusanDisplay().CreateFrameLazySusanDisplay(!manualEdit,manualEdit);
 
         //Add to basics Panel
@@ -67,8 +61,6 @@ public class AddToBasics implements ActionListener {
             orderNumber1.add(orderNumber1Label);
             orderNumberPanel.add(orderNumber1);
         }
-        //           Event Name
-
         // Panel for Event Name
         JPanel eventNamePanel = new JPanel();
         eventNamePanel.setPreferredSize(new Dimension(200, 50));
@@ -82,8 +74,6 @@ public class AddToBasics implements ActionListener {
         // Text field for event name
         eventName = new JTextField(10);
         eventNamePanel.add(eventName,BorderLayout.SOUTH);
-
-        //            Event info
 
         // Panel for Event Info
         JPanel eventInfoPanel = new JPanel();
@@ -104,19 +94,13 @@ public class AddToBasics implements ActionListener {
         eventInfoPanel.add(eventInfoText,BorderLayout.SOUTH);
 
         //              Notification
-
         JPanel basicsNotif = new JPanel();
         basicsNotif.setPreferredSize(new Dimension(200, 60));
         basicsNotif.setLayout(new BorderLayout());
-
-        //Adding each component to basics panel
         addToBasicsPanel.add(orderNumberPanel);
         addToBasicsPanel.add(eventNamePanel);
         addToBasicsPanel.add(eventInfoPanel);
         addToBasicsPanel.add(basicsNotif);
-
-
-
         addToBasicsPanel.setVisible(true);
         mainFrame.add(addToBasicsPanel);
         mainFrame.add(lazySusanDisplay);
@@ -153,17 +137,17 @@ public class AddToBasics implements ActionListener {
         //reorders the values on Basics.txt based on Compact Mem. If originalNum = newNum it's used to write to memory
         //Rearranges Compacted memory
 
-        compactedMemoryStorage = InitalizeMemory.getCompactMem();
+        compactedMemoryStorage = InitializeMemory.getCompactMem();
 
         if (!originalNum.equals(newNum)) {
             System.out.println(compactedMemoryStorage);
-            List<String> tempCopy = compactedMemoryStorage.get(Integer.valueOf(originalNum) - 1);
-            compactedMemoryStorage.remove(Integer.valueOf(originalNum) - 1);
-            compactedMemoryStorage.add(Integer.valueOf(newNum) - 1, tempCopy);
+            List<String> tempCopy = compactedMemoryStorage.get(Integer.parseInt(originalNum) - 1);
+            compactedMemoryStorage.remove(Integer.parseInt(originalNum) - 1);
+            compactedMemoryStorage.add(Integer.parseInt(newNum) - 1, tempCopy);
         }
 
         //Writes compacted memory to Basics
-        Boolean first = true;
+        boolean first = true;
         try {
             BufferedWriter bw = new BufferedWriter(
                     new FileWriter(basicsFileLocation));
@@ -179,14 +163,15 @@ public class AddToBasics implements ActionListener {
                 }
             bw.close();
         } catch (Exception ex) {
-            return;
+            System.out.println(ex);
+            FrameController.ErrorMessage("An Error occurred, please try again");
+            FrameController.ReturnToMain();
         }
     }
-    private Boolean checkNumString(String s){
+    private boolean checkNumString(String s){
         try {
-            int numS = Integer.valueOf(s);
-            if (numS <= compactMemSize+1 & numS > 0) {return true;}
-            else return false;
+            int numS = Integer.parseInt(s);
+            return (numS <= compactMemSize + 1 & numS > 0);
         } catch (NumberFormatException e) {
             return false;
         }
@@ -203,10 +188,8 @@ public class AddToBasics implements ActionListener {
                 int orderNumberVal = 1;
                 if (!checkNumString(orderNumberValString)) {
                     orderNumberVal= compactMemSize+1;
-                } else orderNumberVal = Integer.valueOf(orderNumberValString);
-
-                    //Write to Basics.txt
-                    List<String> memoryStorage = InitalizeMemory.getMemStorage();
+                } else orderNumberVal = Integer.parseInt(orderNumberValString);
+                    List<String> memoryStorage = InitializeMemory.getMemStorage();
                     memoryStorage.add(" [en] ");
                     memoryStorage.add(eventName.getText()); //event name
                     memoryStorage.add(" [ei] ");
@@ -214,8 +197,8 @@ public class AddToBasics implements ActionListener {
                     memoryStorage.add(" [Time] ");
                     memoryStorage.add("Pass");
                     if (orderNumberVal < compactMemSize) {
-                        InitalizeMemory.updateMemory(memoryStorage);
-                        compactedMemoryStorage = InitalizeMemory.CompactMem();
+                        InitializeMemory.updateMemory(memoryStorage);
+                        compactedMemoryStorage = InitializeMemory.CompactMem();
                         ReorderList(String.valueOf(compactedMemoryStorage.size()), orderNumber.getText());
                     } else {
                         if (memoryStorage.get(0).isBlank()) {
@@ -223,7 +206,7 @@ public class AddToBasics implements ActionListener {
                         }
                         if (memoryStorage.get(0).equals(" [en] ") & memoryStorage.get(1).equals(" [en] "))
                             memoryStorage.remove(0);
-                        Boolean first = true;
+                        boolean first = true;
                         try {
                             BufferedWriter bw = new BufferedWriter(
                                     new FileWriter(basicsFileLocation));
@@ -240,7 +223,9 @@ public class AddToBasics implements ActionListener {
                             bw.close();
 
                         } catch (Exception ex) {
-
+                            System.out.println(ex);
+                            FrameController.ErrorMessage("An Error occurred, please try again");
+                            FrameController.ReturnToMain();
                         }
                     }
 

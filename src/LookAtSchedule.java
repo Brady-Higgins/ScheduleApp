@@ -9,7 +9,7 @@ import java.util.List;
 public class LookAtSchedule {
     private final String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
     private final String TimeAssignedFile = fileLocation + "//Time.txt";
-    private List<List<String>> compactMem = InitializeMemory.getCompactMem();
+    private final List<List<String>> compactMem = InitializeMemory.getCompactMem();
 
     private List<String> eventInfoList = new ArrayList<>();
 
@@ -88,13 +88,15 @@ public class LookAtSchedule {
                         if (EventInfoBool) {
                             if (firstWord) firstWord = false;
                             else {
-                                eventInfoStringBuilder.append(" " + eventWordString);
+                                eventWordString =" " + eventWordString;
+                                eventInfoStringBuilder.append(eventWordString);
                             }
                         }
                         if (EventNameBool) {
                             if (firstWord) firstWord = false;
                             else {
-                                eventNameStringBuilder.append(" " + eventWordString);
+                                eventWordString =" " + eventWordString;
+                                eventInfoStringBuilder.append(eventWordString);
                             }
                         }
                         if (EventTimeBool) {

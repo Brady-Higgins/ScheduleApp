@@ -6,13 +6,13 @@ public class OptionPanel{
     private static JButton addToBasics;
     private static JButton lookAtSchedule;
     private static JButton createSchedule;
-    private static JButton returnToMain;
     private static AddToBasics addToBasicsInstance;
     private static LookAtSchedule lookAtScheduleInstance;
     private static CreateSchedule createScheduleInstance;
 
     private OptionPanel(){}
     private static JPanel CreateOptionPanel(){
+        JButton returnToMain;
         optionPanel = new JPanel();
         optionPanel.setBackground(Color.BLACK);
         optionPanel.setLayout(new FlowLayout());
@@ -38,9 +38,6 @@ public class OptionPanel{
     }
     public static CreateSchedule getCreateSchedule(){
         return createScheduleInstance;
-    }
-    public static LookAtSchedule getLookAtSchedule(){
-        return lookAtScheduleInstance;
     }
     public static JPanel getOptionPanel(){
         if (optionPanel == null){

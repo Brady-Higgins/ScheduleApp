@@ -18,12 +18,13 @@ public class CreateSchedule implements ActionListener {
     JButton endAM;
     JButton endPM;
     static String beginTimePMorAM = "";
-    static String endTimePMorAM="";
+    static String endTimePMorAM = "";
     static boolean mainTimeComponent = false;
     List<String> totalEventTimesList = new ArrayList<>();
     private final String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
     private final String TimeAssignedFile = fileLocation + "//Time.txt";
-    private void CreateGUI(){
+
+    private void CreateGUI() {
         boolean manualTime = true;
         JPanel lazySusanDisplay = new FrameLazySusanDisplay().CreateFrameLazySusanDisplay(manualTime, !manualTime);
 
@@ -93,12 +94,14 @@ public class CreateSchedule implements ActionListener {
         FrameManager.getFrame().revalidate();
         FrameManager.getFrame().repaint();
     }
+
     CreateSchedule() {
         OptionPanel.ReturnToMainOnly();
         CreateGUI();
 
     }
-    public void AssignScheduleValues(){
+
+    public void AssignScheduleValues() {
         if (!mainTimeComponent) {
             FrameController.ErrorMessage("Please Complete Schedule Time to the Left First!");
             return;
@@ -114,8 +117,8 @@ public class CreateSchedule implements ActionListener {
         int[] currentTimeArray;
         String blankString = "blank";
         String stringTime;
-        int totalManualTimeHour=0;
-        int totalManualTimeMin=0;
+        int totalManualTimeHour = 0;
+        int totalManualTimeMin = 0;
 
 
         List<JTextField> beginTimeEventFList = FrameLazySusanDisplay.getListOfBeginningTimesHour();
@@ -177,14 +180,13 @@ public class CreateSchedule implements ActionListener {
         //Runs after collecting values from each event and assigns times to each event
 
 
-        List<List<String>> timeCompactMemStor = new TimeAssignmentAlgorithm().AssignTimeVals(totalManualEvents,totalManualTimeHour,totalManualTimeMin,totalEventTimesList);
+        List<List<String>> timeCompactMemStor = new TimeAssignmentAlgorithm().AssignTimeVals(totalManualEvents, totalManualTimeHour, totalManualTimeMin, totalEventTimesList);
 
         //write to a time file
 
         try {
             BufferedWriter bw = new BufferedWriter(
                     new FileWriter(TimeAssignedFile));
-            System.out.println(timeCompactMemStor);
             for (List<String> list : timeCompactMemStor) {
                 for (Object val : list) {
                     String word = String.valueOf(val);
@@ -234,17 +236,16 @@ public class CreateSchedule implements ActionListener {
             endAM.removeActionListener(this);
             endPM.removeActionListener(this);
         }
-        if (e.getSource()==enter){
+        if (e.getSource() == enter) {
             if (!(beginTimeHour.getText().equals("") || beginTimeMin.getText().equals("") || endTimeHour.getText().equals("") || endTimeMin.getText().equals(""))) {
                 if (!(beginTimePMorAM.equals("") || endTimePMorAM.equals(""))) {
                     mainTimeComponent = true;
                 } else FrameController.ErrorMessage("Indicate PM or AM");
-            }else FrameController.ErrorMessage("Fill Every Box");
+            } else FrameController.ErrorMessage("Fill Every Box");
         }
 
 
     }
-
 
 
     public static int[] getTimeFrame() {
@@ -262,39 +263,33 @@ public class CreateSchedule implements ActionListener {
         }
         return null;
     }
-    public static boolean EvaluateNum(String Num, int maxValue){
+
+    public static boolean EvaluateNum(String Num, int maxValue) {
         //Evaluates Num to check if it's a reasonable num
         //-Checks: Blank, not a number, negative
 
         if (Num.isEmpty() || Num.isBlank()) return false;
-        for (char c : Num.toCharArray()){
+        for (char c : Num.toCharArray()) {
             if (!Character.isDigit(c)) return false;
         }
         if (Integer.parseInt(Num) <= 0) return false;
         return Integer.parseInt(Num) <= maxValue;
     }
-    public static boolean getMainTimeComponent(){
-        return mainTimeComponent;
-    }
-    public static void setMainTimeComponent(boolean bool) {mainTimeComponent = bool;}
-    public static int getBeginTimeHour(){
+
+    public static int getBeginTimeHour() {
         return Integer.parseInt(beginTimeHour.getText());
     }
-    public static int getBeginTimeMin(){
+
+    public static int getBeginTimeMin() {
         return Integer.parseInt(beginTimeMin.getText());
     }
-    public static int getEndTimeHour(){
+
+    public static int getEndTimeHour() {
         return Integer.parseInt(endTimeHour.getText());
     }
-    public static int getEndTimeMin(){
+
+    public static int getEndTimeMin() {
         return Integer.parseInt(endTimeMin.getText());
     }
 
-    public String getBeginTimePMorAM() {
-        return beginTimePMorAM;
-    }
-
-    public String getEndTimePMorAM() {
-        return beginTimePMorAM;
-    }
 }

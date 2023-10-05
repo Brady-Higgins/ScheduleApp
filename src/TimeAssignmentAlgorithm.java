@@ -40,7 +40,6 @@ public class TimeAssignmentAlgorithm {
                 currentTimeMin = 0;
                 currentTimeHour++;
             }
-            System.out.println(totalEventTimesList);
             for (int i = 0; i < list.size(); i++) {
                 String eventWordString = String.valueOf(list.get(i)).replaceAll("\\s", "");             //rewrite to reading just last value of list
                 if (totalEventTimesList.get(eventNum).equals("Pass")) {
@@ -240,8 +239,7 @@ public class TimeAssignmentAlgorithm {
 
                 }
 
-                if (eventWordString.equals("[Time]")) timeRead = true;
-                else timeRead = false;
+                timeRead = eventWordString.equals("[Time]");
 
             }
             eventNum++;

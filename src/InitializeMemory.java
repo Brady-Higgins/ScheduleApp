@@ -9,13 +9,11 @@ public class InitializeMemory {
 
     private static List<String> memoryStorage;
     private static List<List<String>> compactedMemoryStorage;
-    private Boolean eventCreation;
     public InitializeMemory(){
         ReadMemory();
         compactedMemoryStorage = CompactMem();
     }
     private void ReadMemory(){
-        eventCreation = false;
         memoryStorage = new ArrayList<>();
         try {
             BufferedReader bw = new BufferedReader(
@@ -37,8 +35,6 @@ public class InitializeMemory {
     }
     public static List<List<String>> CompactMem(){
         List<String> memoryStorageClone = new ArrayList<>(memoryStorage);
-        System.out.println("-------------------------");
-        System.out.println(memoryStorageClone);
         if (memoryStorageClone.size()==0) return new ArrayList<>();
         //compacts memory to lists within lists
         List<String> temp = new ArrayList<>();
@@ -72,8 +68,6 @@ public class InitializeMemory {
     public static List<String> getMemStorage(){
         return memoryStorage;
     }
-    public Boolean isMemoryEmpty(){
-        return !eventCreation;
-    }
+
 
 }

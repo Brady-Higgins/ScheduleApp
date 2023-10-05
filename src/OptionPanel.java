@@ -1,9 +1,5 @@
-
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class OptionPanel{
     private static JPanel optionPanel;
@@ -23,13 +19,13 @@ public class OptionPanel{
         optionPanel.setBounds(0,320,600,60);
 
         addToBasics = new JButton("Add To Basics");
-        addToBasics.addActionListener(e -> { addToBasicsInstance = new AddToBasics(); });
+        addToBasics.addActionListener(e -> addToBasicsInstance = new AddToBasics());
         lookAtSchedule = new JButton("Look At Schedule");
-        lookAtSchedule.addActionListener(e -> { lookAtScheduleInstance = new LookAtSchedule();});
+        lookAtSchedule.addActionListener(e -> lookAtScheduleInstance = new LookAtSchedule());
         createSchedule = new JButton("Create a New Schedule");
-        createSchedule.addActionListener(e -> { createScheduleInstance = new CreateSchedule();});
+        createSchedule.addActionListener(e -> createScheduleInstance = new CreateSchedule());
         returnToMain = new JButton("Main Menu");
-        returnToMain.addActionListener(e -> {FrameController.ReturnToMain();});
+        returnToMain.addActionListener(e -> FrameController.ReturnToMain());
 
         optionPanel.add(addToBasics);
         optionPanel.add(lookAtSchedule);

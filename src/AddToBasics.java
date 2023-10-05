@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class AddToBasics implements ActionListener {
     JPanel addToBasicsPanel;
@@ -140,7 +141,6 @@ public class AddToBasics implements ActionListener {
         compactedMemoryStorage = InitializeMemory.getCompactMem();
 
         if (!originalNum.equals(newNum)) {
-            System.out.println(compactedMemoryStorage);
             List<String> tempCopy = compactedMemoryStorage.get(Integer.parseInt(originalNum) - 1);
             compactedMemoryStorage.remove(Integer.parseInt(originalNum) - 1);
             compactedMemoryStorage.add(Integer.parseInt(newNum) - 1, tempCopy);
@@ -189,13 +189,13 @@ public class AddToBasics implements ActionListener {
                 if (!checkNumString(orderNumberValString)) {
                     orderNumberVal= compactMemSize+1;
                 } else orderNumberVal = Integer.parseInt(orderNumberValString);
-                    List<String> memoryStorage = InitializeMemory.getMemStorage();
-                    memoryStorage.add(" [en] ");
-                    memoryStorage.add(eventName.getText()); //event name
-                    memoryStorage.add(" [ei] ");
-                    memoryStorage.add(eventInfoText.getText());   //event info
-                    memoryStorage.add(" [Time] ");
-                    memoryStorage.add("Pass");
+                List<String> memoryStorage = InitializeMemory.getMemStorage();
+                memoryStorage.add(" [en] ");
+                memoryStorage.add(eventName.getText()); //event name
+                memoryStorage.add(" [ei] ");
+                memoryStorage.add(eventInfoText.getText());   //event info
+                memoryStorage.add(" [Time] ");
+                memoryStorage.add("Pass");
                     if (orderNumberVal < compactMemSize) {
                         InitializeMemory.updateMemory(memoryStorage);
                         compactedMemoryStorage = InitializeMemory.CompactMem();
@@ -236,6 +236,6 @@ public class AddToBasics implements ActionListener {
             }
         FrameController.ErrorMessage("Input Invalid");
     }
-    private static FrameLazySusanDisplay FrameLazySusanInstance = new FrameLazySusanDisplay();
+    private final static FrameLazySusanDisplay FrameLazySusanInstance = new FrameLazySusanDisplay();
 }
 

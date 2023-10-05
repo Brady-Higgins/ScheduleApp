@@ -155,7 +155,10 @@ public class FrameLazySusanDisplay implements ActionListener {
             for (Object eventWord : listItem) {
                 String eventWordString = String.valueOf(eventWord).replaceAll("\\s", "");
                 if (eventWordString.equals("[ei]")) titleBool = false;
-                if (titleBool) titleStringBuilder.append(" " + eventWordString);
+                if (titleBool){
+                    eventWordString = " " + eventWordString;
+                    titleStringBuilder.append(eventWordString);
+                }
                 if (eventWordString.equals("[en]")) {
                     titleBool = true;
                 }
@@ -321,13 +324,10 @@ public class FrameLazySusanDisplay implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e ){
         if (e.getSource()==nextPage){
-
-
             if (classManualTime) {
-
                 final int nonUserEvents = 1;
                 final int totalEvents = eventsToDisplay.size();
-                int maxCycles = (int)Math.ceil((totalEvents - nonUserEvents) / 3);
+                int maxCycles = (int)Math.ceil((double) (totalEvents - nonUserEvents) / 3);
                 int lastCycleEventsToDisplay = (eventsToDisplay.size() - nonUserEvents) % 3;
                 if (IterationsLazySusan > maxCycles) {
                     FrameController.ErrorMessage("No More Events To Display");
@@ -356,7 +356,7 @@ public class FrameLazySusanDisplay implements ActionListener {
             }
             if (classManualEdit) {
                 final int nonUserEvents = 1;
-                int maxCycles = (int)Math.ceil((eventsToDisplay.size() - nonUserEvents) / 3);
+                int maxCycles = (int)Math.ceil((double)(eventsToDisplay.size() - nonUserEvents) / 3);
                 int lastCycleEventsToDisplay = (eventsToDisplay.size() - nonUserEvents) % 3;
                 if (IterationsLazySusan > maxCycles) {
                     FrameController.ErrorMessage("No More Events To Display");

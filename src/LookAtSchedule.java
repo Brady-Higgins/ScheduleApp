@@ -12,6 +12,7 @@ public class LookAtSchedule {
     private final List<List<String>> compactMem = InitializeMemory.getCompactMem();
 
     private List<String> eventInfoList = new ArrayList<>();
+    private int iterationsSchedule = 0;
 
 
     public LookAtSchedule(){
@@ -19,7 +20,7 @@ public class LookAtSchedule {
         Boolean fileExists = CheckTimeFileExists();
         if (fileExists){
             ArrayList<JButton> infoButtonList = new ArrayList<>();
-            final int compactMemSize = compactMem.size() + 1;
+            final int compactMemSize = compactMem.size() + 8;
             int startZeroIncrem =0;
             for (int i = 1; i< compactMemSize; i++){
                 JButton eventButton = new JButton("i");
@@ -96,7 +97,7 @@ public class LookAtSchedule {
                             if (firstWord) firstWord = false;
                             else {
                                 eventWordString =" " + eventWordString;
-                                eventInfoStringBuilder.append(eventWordString);
+                                eventNameStringBuilder.append(eventWordString);
                             }
                         }
                         if (EventTimeBool) {
@@ -141,13 +142,16 @@ public class LookAtSchedule {
 
                 }
                 bw.close();
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 System.out.println(ex);
                 FrameController.ErrorMessage("Error in application, resetting.");
                 FrameController.ReturnToMain();
+                return;
             }
             int eventsDisplayed = -1;
-            for (int i = 0; i < eventMapName.lastKey() + 1; i++) {
+            int maxDisplayEvents = 8;
+            for (int i = 0; i < maxDisplayEvents; i++) {
 
                 if (eventMapName.get(i) == null) {
                     continue;
@@ -159,6 +163,32 @@ public class LookAtSchedule {
                 }
                 eventDisplayPanel.add(eventMapName.get(i));
             }
+            JButton nextPage = new JButton();
+            nextPage.setPreferredSize(new Dimension(120, 30));
+            nextPage.addActionListener(e -> {
+                //cycle display for Schedule
+                int totalComponentCount = eventDisplayPanel.getComponentCount();
+                for (int i = 0; i < totalComponentCount; i++){
+                    eventDisplayPanel.remove(0);
+                }
+                iterationsSchedule++;
+                if (iterationsSchedule*8 > eventMapName.size()) iterationsSchedule = 0;
+                int startNum = iterationsSchedule * 8;
+                int endNum = eventMapName.size()-1;
+                if (endNum > startNum +8){
+                    endNum = startNum + 7;
+                }
+                for (int i = startNum; i <= endNum; i++ ){
+                    eventDisplayPanel.add(eventMapName.get(i));
+                }
+                eventDisplayPanel.revalidate();
+                FrameManager.getFrame().revalidate();
+                FrameManager.getFrame().repaint();
+            });
+            nextPage.setBackground(Color.WHITE);
+            JLabel nextPageLabel = new JLabel("Next Page");
+            nextPage.add(nextPageLabel);
+            OptionPanel.getOptionPanel().add(nextPage);
             FrameManager.getFrame().add(eventDisplayPanel);
             FrameManager.getFrame().revalidate();
             FrameManager.getFrame().repaint();

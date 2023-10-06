@@ -327,7 +327,7 @@ public class FrameLazySusanDisplay implements ActionListener {
             if (classManualTime) {
                 final int nonUserEvents = 1;
                 final int totalEvents = eventsToDisplay.size();
-                int maxCycles = (int)Math.ceil((double) (totalEvents - nonUserEvents) / 3);
+                int maxCycles = (int)Math.floor((double) (totalEvents - nonUserEvents) / 3) -1;
                 int lastCycleEventsToDisplay = (eventsToDisplay.size() - nonUserEvents) % 3;
                 if (IterationsLazySusan > maxCycles) {
                     FrameController.ErrorMessage("No More Events To Display");
@@ -356,7 +356,7 @@ public class FrameLazySusanDisplay implements ActionListener {
             }
             if (classManualEdit) {
                 final int nonUserEvents = 1;
-                int maxCycles = (int)Math.ceil((double)(eventsToDisplay.size() - nonUserEvents) / 3);
+                int maxCycles = (int)Math.floor(((double) eventsToDisplay.size() - nonUserEvents) / 3);
                 int lastCycleEventsToDisplay = (eventsToDisplay.size() - nonUserEvents) % 3;
                 if (IterationsLazySusan > maxCycles) {
                     FrameController.ErrorMessage("No More Events To Display");

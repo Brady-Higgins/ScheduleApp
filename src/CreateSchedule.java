@@ -183,7 +183,6 @@ public class CreateSchedule implements ActionListener {
         List<List<String>> timeCompactMemStor = new TimeAssignmentAlgorithm().AssignTimeVals(totalManualEvents, totalManualTimeHour, totalManualTimeMin, totalEventTimesList);
 
         //write to a time file
-
         try {
             BufferedWriter bw = new BufferedWriter(
                     new FileWriter(TimeAssignedFile));

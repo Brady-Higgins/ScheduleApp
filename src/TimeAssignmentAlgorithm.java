@@ -1,11 +1,12 @@
+
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class TimeAssignmentAlgorithm {
-    private List<List<String>> compactMemStorage;
+    private List<List<String>> compactMemStorage = InitializeMemory.getCompactMem();
     List<String> totalEventTimesList;
-    private List<List<String>> timeCompactMemStor = new ArrayList<>(InitializeMemory.getCompactMem());
+    private List<List<String>> timeCompactMemStor;
     public List<List<String>> AssignTimeVals(int totalManualEvents, int totalManualTimeHour, int totalManualTimeMin,List<String>eventTimes){
         totalEventTimesList = eventTimes;
         int nonManualEvents = InitializeMemory.getCompactMem().size() - totalManualEvents;
@@ -34,8 +35,10 @@ public class TimeAssignmentAlgorithm {
         int manualEventsRan = 0;
 
         compactMemStorage = BestFitList(averageTimeArray);
-        for (int j = 0; j<compactMemStorage.size(); j++) {
-            List<String> list = compactMemStorage.get(j);
+        timeCompactMemStor = BestFitList(averageTimeArray);
+
+        for (int j = 0; j<timeCompactMemStor.size()-1; j++) {
+            List<String> list = timeCompactMemStor.get(eventNum);
             if (currentTimeMin > 59) {
                 currentTimeMin = 0;
                 currentTimeHour++;
@@ -57,7 +60,7 @@ public class TimeAssignmentAlgorithm {
                         currentTimeHour = calculatedHour;
                         currentTimeMin = calculatedMin;
                         calculatedTime += calculatedHour + "-" + calculatedMin;
-                        timeCompactMemStor.get(eventNum).set(i,calculatedTime);
+                        list.set(i,calculatedTime);
                         timeIndexList.add(i);
                         nonManualEventsRan++;
                     }
@@ -69,14 +72,21 @@ public class TimeAssignmentAlgorithm {
 
                         String eventTime = totalEventTimesList.get(eventNum);
                         String[] eventSplit = eventTime.split("-");
-                        timeDiffer = (currentTimeHour - Integer.parseInt(eventSplit[0])) *60 + currentTimeMin - Integer.parseInt(eventSplit[1]);
+                        timeDiffer = (currentTimeHour - Integer.parseInt(eventSplit[0])) *60 + currentTimeMin - Integer.parseInt(eventSplit[1]);     //time difference between current event time and next event
 
                         manualEventsRan++;
-
-                        int remainder = timeDiffer % (averageTimeArray[0] * 60 + averageTimeArray[1]); //Simplifying: remainder = how much its digging into the previous time
+                        int remainder;
+                        int totalTime = averageTimeArray[0] * 60 + averageTimeArray[1];
+                        if (totalTime!= 0){
+                            remainder = timeDiffer % (averageTimeArray[0] * 60 + averageTimeArray[1]); //Simplifying: remainder = how much its digging into the previous time
+                        }
+                        else{
+                            FrameController.ErrorMessage("Illegal Time Value");
+                            FrameController.ReturnToMain();
+                            return null;
+                        }
                         eventShiftNum = Math.abs((timeDiffer / (averageTimeArray[0] * 60 + averageTimeArray[1])));
                         //neg time = event in future | pos time = event in past
-                        //method to find nearest time so standard time can be used for events
 
                         if (timeDiffer == 0){
                             calculatedTime = eventSplit[0] + "-" + eventSplit[1] + "-" + eventSplit[2] + "-" + eventSplit[3];
@@ -166,12 +176,12 @@ public class TimeAssignmentAlgorithm {
                                 //remainder is greater than 20
                                 //alters event before insertion event and reduces time
                                 if (eventNum >= timeCompactMemStor.size()-2) {
-                                    //edge case. Not certain how to fix so temp fix
                                     String val = String.valueOf(timeCompactMemStor.get(eventNum - 1).get(timeIndexList.get(eventNum - 1)));
                                     tempArray = val.split("-");
                                     tempArray[2] = eventSplit[0];
                                     tempArray[3] = eventSplit[1];
                                     timeCompactMemStor.get(eventNum - 1).set(timeIndexList.get(eventNum - 1), String.join("-",tempArray));
+
                                     calculatedTime = eventSplit[0] + "-" + eventSplit[1] + "-" + eventSplit[2] + "-" + eventSplit[3];
                                     timeCompactMemStor.get(eventNum).set(i, calculatedTime);
                                     currentTimeHour = Integer.parseInt(eventSplit[2]);
@@ -185,8 +195,6 @@ public class TimeAssignmentAlgorithm {
 
                                     tempArray[2] = eventSplit[0];
                                     tempArray[3] = eventSplit[1];
-
-
                                     tempString = CheckTime(tempArray, true, false);
                                     timeCompactMemStor.get(getVal).set(timeIndexList.get(getVal), tempString);
 
@@ -209,7 +217,6 @@ public class TimeAssignmentAlgorithm {
                                     timeIndexList.add(getVal + 2, timeIndexList.get(getVal));
                                     totalEventTimesList.add(getVal + 2, "Pass");
                                     eventNum++;                                                   // because another event was added, eventNum should increase so it doesn't iterate over
-
                                     //adjust every future event
                                     int pastPresentTimeHour = Integer.parseInt(tempArray[2]);
                                     int pastPresentTimeMin = Integer.parseInt(tempArray[3]);
@@ -243,7 +250,6 @@ public class TimeAssignmentAlgorithm {
 
             }
             eventNum++;
-//            storage.add(list);
         }
 
     return timeCompactMemStor;
@@ -372,7 +378,7 @@ public class TimeAssignmentAlgorithm {
                 //recalculates timeDiffer and if it's still too large, it'll replace
                 timeDiffer = (bestFitHour - Integer.parseInt(eventSplit[0])) *60 + bestFitMin - Integer.parseInt(eventSplit[1]);
 
-                if (timeDiffer >= 200){
+                if (timeDiffer >= 120){
                     eventShiftNum = Math.abs((timeDiffer / (averageTimeArray[0] * 60 + averageTimeArray[1])));
                     int getVal = eventNum - (eventShiftNum);
                     List<String> temp = compactMemStorage.get(eventNum);
@@ -380,9 +386,8 @@ public class TimeAssignmentAlgorithm {
                     totalEventTimesList.add(getVal,val);
                     compactMemStorage.remove(eventNum);
                     compactMemStorage.add(getVal,temp);
-
                 }
-                else if (timeDiffer <= -200){
+                else if (timeDiffer <= -120){
                     eventShiftNum = Math.abs((timeDiffer / (averageTimeArray[0] * 60 + averageTimeArray[1])));
                     int getVal = eventNum+(eventShiftNum+1);
                     List<String> temp = compactMemStorage.get(eventNum);

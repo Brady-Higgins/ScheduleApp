@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Objects;
 
 public class AddToBasics implements ActionListener {
     JPanel addToBasicsPanel;
@@ -17,7 +17,7 @@ public class AddToBasics implements ActionListener {
     List<List<String>> compactedMemoryStorage = InitializeMemory.getCompactMem();
     final int compactMemSize = InitializeMemory.getCompactMem().size();
     JFrame mainFrame = FrameManager.getFrame();
-    private final String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
+    private final String fileLocation = Objects.requireNonNull(this.getClass().getClassLoader().getResource("")).getPath();
     private final String basicsFileLocation = fileLocation + "//Basics.txt";
     AddToBasics(){
        CreateGUI();
@@ -154,12 +154,12 @@ public class AddToBasics implements ActionListener {
             for (List<String> list : compactedMemoryStorage)
                 for (String word : list) {
                     String wordNoSpace = word.replaceAll("\\s", "");
-                    if (wordNoSpace.replaceAll("\\s", "").equals("[en]")) {
+                    if (wordNoSpace.equals("[en]")) {
                         if (!first) {
                             bw.newLine();
                         } else first = false;
                     }
-                    bw.write(wordNoSpace+" ");
+                    bw.write(" " +wordNoSpace);
                 }
             bw.close();
         } catch (Exception ex) {
@@ -191,9 +191,13 @@ public class AddToBasics implements ActionListener {
                 } else orderNumberVal = Integer.parseInt(orderNumberValString);
                 List<String> memoryStorage = InitializeMemory.getMemStorage();
                 memoryStorage.add(" [en] ");
-                memoryStorage.add(eventName.getText()); //event name
+                for (String word : eventName.getText().split(" ")){
+                    memoryStorage.add(word);
+                }
                 memoryStorage.add(" [ei] ");
-                memoryStorage.add(eventInfoText.getText());   //event info
+                for (String word : eventInfoText.getText().split(" ")){
+                    memoryStorage.add(word);
+                }
                 memoryStorage.add(" [Time] ");
                 memoryStorage.add("Pass");
                     if (orderNumberVal < compactMemSize) {

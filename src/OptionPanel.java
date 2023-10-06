@@ -55,6 +55,9 @@ public class OptionPanel{
         optionPanel.add(addToBasics,0);
         optionPanel.add(lookAtSchedule,1);
         optionPanel.add(createSchedule,2);
+        if (optionPanel.getComponentCount() > 4){
+            optionPanel.remove(4);
+        }
     }
 
 }

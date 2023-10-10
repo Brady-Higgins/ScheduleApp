@@ -23,10 +23,12 @@ public class CreateSchedule implements ActionListener {
     List<String> totalEventTimesList = new ArrayList<>();
     private final String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
     private final String TimeAssignedFile = fileLocation + "//Time.txt";
+    private static FrameLazySusanDisplay frameLazySusanDisplay;
 
     private void CreateGUI() {
         boolean manualTime = true;
-        JPanel lazySusanDisplay = new FrameLazySusanDisplay().CreateFrameLazySusanDisplay(manualTime, !manualTime);
+        frameLazySusanDisplay = new FrameLazySusanDisplay();
+        JPanel lazySusanDisplay = frameLazySusanDisplay.CreateFrameLazySusanDisplay(manualTime, !manualTime);
 
         JPanel displayCreate = new JPanel();
         JLabel beginTimeLabel = new JLabel("Beginning Time");
@@ -39,7 +41,8 @@ public class CreateSchedule implements ActionListener {
         JLabel endTimeLabel = new JLabel("Ending Time");
         JLabel endMin = new JLabel("Min");
         JLabel endHour = new JLabel("Hour");
-        enter = new JButton("Enter");
+        JLabel enterLabel = new JLabel("Enter");
+        enter = new JButton();
         beginAM = new JButton("AM");
         beginPM = new JButton("PM");
         endAM = new JButton("AM");
@@ -63,6 +66,9 @@ public class CreateSchedule implements ActionListener {
         endTimeHour.setPreferredSize(new Dimension(50, 30));
         endTimeMin.setPreferredSize(new Dimension(50, 30));
         enter.setPreferredSize(new Dimension(50, 30));
+        enter.setLayout(null);
+        enterLabel.setBounds(5,0,50,30);
+        enter.add(enterLabel);
         beginTimeHour.setVisible(true);
         beginTimeMin.setVisible(true);
         endTimeHour.setVisible(true);
@@ -119,13 +125,21 @@ public class CreateSchedule implements ActionListener {
         String stringTime;
         int totalManualTimeHour = 0;
         int totalManualTimeMin = 0;
+        boolean firstAm;
+        boolean secondAM;
+        int timeDifferenceHour;
+        int timeDifferenceMin;
+        String firstTimePeriod;
+        String secondTimePeriod;
 
 
         List<JTextField> beginTimeEventFList = FrameLazySusanDisplay.getListOfBeginningTimesHour();
         List<JTextField> beginTimeEventSList = FrameLazySusanDisplay.getListOfBeginningTimesMin();
         List<JTextField> endTimeEventFList = FrameLazySusanDisplay.getListOfEndingTimesHour();
         List<JTextField> endTimeEventSList = FrameLazySusanDisplay.getListOfEndingTimesMin();
-
+        List<Boolean> AMTimeList = frameLazySusanDisplay.getAMTimeList();
+        List<Boolean> PMTimeList = frameLazySusanDisplay.getPMTimeList();
+        int timePeriodIncrem = 0;
         for (int i = 0; i < beginTimeEventFList.size(); i++) {
             beginTimeF = 0;
             beginTimeS = 0;
@@ -133,6 +147,8 @@ public class CreateSchedule implements ActionListener {
             endTimeS = 0;
             beginTime = false;
             endTime = false;
+            firstAm = false;
+            secondAM = false;
 
 
             if (!(beginTimeEventFList.get(i).getText().equals("")) & EvaluateNum(beginTimeEventFList.get(i).getText(), 99999)) {
@@ -152,26 +168,50 @@ public class CreateSchedule implements ActionListener {
                 endTimeS = Integer.parseInt(endTimeEventSList.get(i).getText());
             }
 
-            int endTimeF1 = endTimeF;
-            if (endTimeF < beginTimeF) {
-                endTimeF1 = 12 + endTimeF;
+            if ((beginTime || endTime) && (AMTimeList.get(timePeriodIncrem) || PMTimeList.get(timePeriodIncrem))){
+                firstAm = AMTimeList.get(timePeriodIncrem);
+                timePeriodIncrem++;
+                secondAM = AMTimeList.get(timePeriodIncrem);
+                timePeriodIncrem++;
             }
-            if (endTimeF1 - beginTimeF < 0) {
-                FrameController.ErrorMessage("Illegal Time at event" + i + 1);
-                return;
+            else{
+                timePeriodIncrem+=2;
+            }
+            if (!firstAm && beginTimeF!=12){
+                beginTimeF += 12;
+            }
+            if (!secondAM && endTimeF!=12) endTimeF += 12;
+            if (firstAm){
+                if (beginTimeF == 12) beginTimeF = 0;
             }
             if (endTimeF - beginTimeF == 0) {
                 if (endTimeS - beginTimeS < 0) {
-                    FrameController.ErrorMessage("Illegal Time at event" + i + 1);
+                    FrameController.ErrorMessage("Illegal Time at event" + i);
                     return;
                 }
             }
             if (beginTime & endTime) {
-                stringTime = beginTimeF + "-" + beginTimeS + "-" + endTimeF1 + "-" + endTimeS;
+                if (firstAm){
+                    firstTimePeriod = "AM";
+                }
+                else firstTimePeriod = "PM";
+                if (secondAM) secondTimePeriod = "AM";
+                else secondTimePeriod = "PM";
+                stringTime = beginTimeF + "-" + beginTimeS + "-" + endTimeF + "-" + endTimeS;
                 totalManualEvents += 1;
-                currentTimeArray = TimeAssignmentAlgorithm.TimeCalculation(beginTimeF, beginTimeS, endTimeF, endTimeS, "Pass", "Pass");    //running pass makes the time calculation method assume the smallest possible time and check its plausibility
-                totalManualTimeHour += currentTimeArray[0];
-                totalManualTimeMin += currentTimeArray[1];
+
+                if (endTimeS-beginTimeS<0){
+                    endTimeF -=1;
+                    endTimeS = Math.abs(60-beginTimeS);
+                    beginTimeS = 0;
+                }
+                if (endTimeF - beginTimeF <0){
+                    timeDifferenceHour = endTimeF - beginTimeF + 24;
+                }
+                else timeDifferenceHour = endTimeF - beginTimeF;
+                timeDifferenceMin = endTimeS - beginTimeS;
+                totalManualTimeHour += timeDifferenceHour;
+                totalManualTimeMin += timeDifferenceMin;
                 totalEventTimesList.add(stringTime);
             } else {
                 totalEventTimesList.add(blankString);
@@ -289,6 +329,9 @@ public class CreateSchedule implements ActionListener {
 
     public static int getEndTimeMin() {
         return Integer.parseInt(endTimeMin.getText());
+    }
+    public static FrameLazySusanDisplay getFrameLazySusanInstance(){
+        return frameLazySusanDisplay;
     }
 
 }

@@ -52,7 +52,7 @@ public class AddToBasics implements ActionListener {
         orderNumberPanel.add(enterButton);
 
         // Text field for order number
-        orderNumber = new JTextField(10);
+        orderNumber = new JTextField(String.valueOf(compactMemSize+1),10);
         final int lastElm = 1;
         if (compactMemSize+1!=lastElm) orderNumberPanel.add(orderNumber);
         else{
@@ -112,13 +112,12 @@ public class AddToBasics implements ActionListener {
         List<JTextField> orderNumberList = FrameLazySusanInstance.getOrderNumberChangeList();
         List<JToggleButton> deleteEventList = FrameLazySusanInstance.getDeleteEventList();
         int eventsDeleted =0;
-        int orderNumListSize = orderNumberList.size();
-        for (int i =0; i<orderNumListSize; i++){
+        for (int i =0; i<deleteEventList.size(); i++){
             if (deleteEventList.get(i).getModel().isSelected()){
                 compactedMemoryStorage.remove(i);
+                deleteEventList.remove(i);
                 eventsDeleted+=1;
-                orderNumListSize--;
-                i--;
+                i=0;
             }
             else if (CreateSchedule.EvaluateNum(orderNumberList.get(i).getText(),compactedMemoryStorage.size())) {
                 String newNum = orderNumberList.get(i).getText();
@@ -221,8 +220,7 @@ public class AddToBasics implements ActionListener {
                                         bw.newLine();
                                     } else first = false;
                                 }
-
-                                bw.write(word);
+                                bw.write(" " +word);
                             }
                             bw.close();
 

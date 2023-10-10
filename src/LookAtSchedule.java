@@ -49,6 +49,8 @@ public class LookAtSchedule {
             boolean EventInfoBool = false;
             boolean EventTimeBool = false;
             boolean firstWord = true;
+            String firstTimePeriod;
+            String secondTimePeriod;
 
             StringBuilder eventNameStringBuilder = new StringBuilder();
             String eventTimeString = "";
@@ -62,10 +64,9 @@ public class LookAtSchedule {
                 String line;
                 while ((line = bw.readLine()) != null) {
                     JPanel event = new JPanel();
-                    event.setPreferredSize(new Dimension(120, 120));
+                    event.setPreferredSize(new Dimension(130, 120));
                     event.setBackground(Color.GREEN);
                     event.setLayout(new FlowLayout());
-
                     for (String s : line.split(" ")) {
                         String eventWordString = String.valueOf(s).replaceAll("\\s", "");
                         if (eventWordString.equals("[en]")) {
@@ -117,18 +118,36 @@ public class LookAtSchedule {
                     eventName.setFont(new Font("Times New Roman", Font.BOLD, 14));
                     eventName.setVerticalAlignment(JLabel.TOP);
                     eventName.setPreferredSize(new Dimension(90, 40));
-
                     eventSplit = eventTimeString.split("-");
                     if (Integer.parseInt(eventSplit[0]) > 12) {
                         eventSplit[0] = String.valueOf(Integer.parseInt(eventSplit[0]) - 12);
+                        firstTimePeriod = "PM";
+                    }
+                    else{
+                        firstTimePeriod = "AM";
                     }
                     if (Integer.parseInt(eventSplit[2]) > 12) {
                         eventSplit[2] = String.valueOf(Integer.parseInt(eventSplit[2]) - 12);
+                        secondTimePeriod = "PM";
+                        if (Integer.parseInt(eventSplit[0]) == 12) firstTimePeriod = "PM";
                     }
-                    String eventTimeS = eventSplit[0] + ":" + eventSplit[1] + "-->" + eventSplit[2] + ":" + eventSplit[3];
+                    else{
+                        secondTimePeriod = "AM";
+                    }
+                    if (Integer.parseInt(eventSplit[0]) == 12 && firstTimePeriod.equals(secondTimePeriod)){
+                        firstTimePeriod = "AM";
+                    }
+                    System.out.println(firstTimePeriod.equals(secondTimePeriod));
+                    if (Integer.parseInt(eventSplit[2]) == 12 && firstTimePeriod.equals(secondTimePeriod) && firstTimePeriod.equals("AM")){
+                        secondTimePeriod = "PM";
+                    }
+                    if (Integer.parseInt(eventSplit[2]) == 12 && firstTimePeriod.equals(secondTimePeriod) && firstTimePeriod.equals("PM")){
+                        secondTimePeriod = "AM";
+                    }
+                    String eventTimeS = eventSplit[0] + ":" + eventSplit[1] + firstTimePeriod + "-->" + eventSplit[2] + ":" + eventSplit[3] + secondTimePeriod;
                     JLabel eventTime = new JLabel(eventTimeS);
                     eventTime.setFont(new Font("Times New Roman", Font.BOLD, 14));
-                    eventTime.setPreferredSize(new Dimension(100, 25));
+                    eventTime.setPreferredSize(new Dimension(130, 25));
                     event.add(eventName);
                     event.add(eventTime);
                     JButton eventButton = infoButtonList.get(eventNum);

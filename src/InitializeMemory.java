@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,24 +17,27 @@ public class InitializeMemory {
     }
     private void ReadMemory(){
         memoryStorage = new ArrayList<>();
-        try {
-            BufferedReader bw = new BufferedReader(
-                    new FileReader(basicsFileLocation));
-            String line;
-            while((line = bw.readLine()) != null){
-                for (String s:line.split(" ")) {
-                    String stringSNoSpace = s.replaceAll("\\s", "");
-                    memoryStorage.add((" " +stringSNoSpace));
+        File file = new File(basicsFileLocation);
+            try {
+                file.createNewFile();
+                BufferedReader bw = new BufferedReader(
+                        new FileReader(basicsFileLocation));
+                String line;
+                while ((line = bw.readLine()) != null) {
+                    for (String s : line.split(" ")) {
+                        String stringSNoSpace = s.replaceAll("\\s", "");
+                        memoryStorage.add((" " + stringSNoSpace));
+                    }
                 }
-            }
-            bw.close();
+                bw.close();
 
-        }catch (Exception ex){
-            System.out.println(ex);
-            FrameController.ErrorMessage("An Error occurred, please try again");
-            FrameController.ReturnToMain();
+            } catch (Exception ex) {
+
+            }
+
+
         }
-    }
+
     public static List<List<String>> CompactMem(){
         List<String> memoryStorageClone = new ArrayList<>(memoryStorage);
         if (memoryStorageClone.size()==0) return new ArrayList<>();
@@ -43,7 +48,8 @@ public class InitializeMemory {
         boolean firstOccurrence = true;
         for (String word : memoryStorageClone) {
             String wordNoSpace = word.replaceAll("\\s", "");
-            temp.add(word);
+            if (wordNoSpace.equals(""))continue;
+            temp.add(wordNoSpace);
             if (wordNoSpace.equals("[en]")) {
                 if (firstOccurrence) {
                     firstOccurrence = false;

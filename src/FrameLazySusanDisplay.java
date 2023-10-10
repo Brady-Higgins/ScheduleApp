@@ -10,14 +10,18 @@ public class FrameLazySusanDisplay implements ActionListener {
     private JButton nextPage;
     private Boolean classManualEdit;
     private Boolean classManualTime;
-    private static ArrayList<JToggleButton> deleteEventList = new ArrayList<>();
-    private static ArrayList<JTextField> orderNumberList = new ArrayList<>();
+    private static ArrayList<JToggleButton> deleteEventList;
+    private static ArrayList<JTextField> orderNumberList;
     List<List<String>> compactedMemoryStorage = InitializeMemory.getCompactMem();
     final int compactMemSize = compactedMemoryStorage.size();
     private static List<JTextField> endTimeEventFList;
     static List<JTextField> beginTimeEventFList;
     static List<JTextField> beginTimeEventSList;
     static List<JTextField> endTimeEventSList;
+    static List<JButton> AMButtonList;
+    static List<JButton> PMButtonList;
+    private List<Boolean> AMTimeList;
+    private List<Boolean> PMTimeList;
 
     TreeMap<Integer,JPanel> eventsToDisplay;
     JPanel manualEditDisplay;
@@ -30,7 +34,7 @@ public class FrameLazySusanDisplay implements ActionListener {
         largeBlank.setPreferredSize(new Dimension(60, 25));
         largeBlank.setBackground(Color.GRAY);
         JPanel manualTimeTitle = new JPanel();
-        manualTimeTitle.setPreferredSize(new Dimension(200, 30));
+        manualTimeTitle.setPreferredSize(new Dimension(200, 25));
         manualTimeTitle.setBackground(Color.GRAY);
         manualTimeTitle.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         JLabel manualTimeTitleLabel = new JLabel("Manual Event Time Input");
@@ -113,6 +117,58 @@ public class FrameLazySusanDisplay implements ActionListener {
             orderNumberList.add(orderNumberButton);
         }
 
+        AMTimeList = new ArrayList<>();
+        for (int i = 0; i < compactMemSize*2; i++){
+            AMTimeList.add(false);
+        }
+        PMTimeList = new ArrayList<>();
+        for (int i = 0; i < compactMemSize*2; i++){
+            PMTimeList.add(false);
+        }
+        AMButtonList = new ArrayList<>();
+        for (int i = 0; i < compactMemSize*2; i++) {
+            JButton AMButton = new JButton();
+            AMButton.setPreferredSize(new Dimension(25,15));
+            AMButton.setLayout(null);
+            AMButton.setName(String.valueOf(i));
+            JLabel AMButtonLabel = new JLabel("AM");
+            AMButtonLabel.setBounds(2,0,25,15);
+            AMButtonLabel.setFont(new Font("Times New Romans", Font.BOLD, 10));
+            AMButton.add(AMButtonLabel);
+            AMButton.addActionListener(e -> {
+                AMButton.setVisible(false);
+                int index = Integer.valueOf(AMButton.getName());
+                AMTimeList.set(index,true);
+                PMButtonList.get(index).setVisible(false);
+                JPanel parentPanel = (JPanel) SwingUtilities.getAncestorOfClass(JPanel.class, AMButton);
+                JPanel grandparentPanel = (JPanel) SwingUtilities.getAncestorOfClass(JPanel.class, parentPanel);
+                grandparentPanel.repaint();
+            });
+            AMButtonList.add(AMButton);
+        }
+        PMButtonList = new ArrayList<>();
+        for (int i = 0; i < compactMemSize*2; i++) {
+            JButton PMButton = new JButton();
+            PMButton.setPreferredSize(new Dimension(25,15));
+            PMButton.setLayout(null);
+            PMButton.setName(String.valueOf(i));
+            JLabel PMButtonLabel = new JLabel("PM");
+            PMButtonLabel.setBounds(2,0,25,15);
+            PMButtonLabel.setFont(new Font("Times New Romans", Font.BOLD, 10));
+            PMButton.add(PMButtonLabel);
+            PMButton.addActionListener(e -> {
+                PMButton.setVisible(false);
+                int index = Integer.valueOf(PMButton.getName());
+                PMTimeList.set(index,true);
+                AMButtonList.get(index).setVisible(false);
+                JPanel parentPanel = (JPanel) SwingUtilities.getAncestorOfClass(JPanel.class, PMButton);
+                JPanel grandparentPanel = (JPanel) SwingUtilities.getAncestorOfClass(JPanel.class, parentPanel);
+                grandparentPanel.repaint();
+            });
+            PMButtonList.add(PMButton);
+        }
+
+
         enterManualEvent = new JButton();
         enterManualEvent.setPreferredSize(new Dimension(120, 30));
         enterManualEvent.setBackground(Color.RED);
@@ -149,6 +205,7 @@ public class FrameLazySusanDisplay implements ActionListener {
         int i = 0;
         boolean fourEventsBool = false;
         int EventIncremental = 0;
+        int TimeEventIncremental = 0;
         for (List<String> listItem : compactedMemoryStorage) {
             i++;
             titleStringBuilder.setLength(0);
@@ -219,6 +276,22 @@ public class FrameLazySusanDisplay implements ActionListener {
                 eventsToDisplay.put(i, event);
             }
             if (classManualTime) {
+                JPanel firstButtonPanel = new JPanel();
+                firstButtonPanel.setPreferredSize(new Dimension(25,40));
+                firstButtonPanel.setBackground(Color.BLUE);
+                JButton AMButtonF = AMButtonList.get(TimeEventIncremental);
+                JButton PMButtonF = PMButtonList.get(TimeEventIncremental);
+                firstButtonPanel.add(AMButtonF);
+                firstButtonPanel.add(PMButtonF);
+                TimeEventIncremental++;
+                JPanel secondButtonPanel = new JPanel();
+                secondButtonPanel.setPreferredSize(new Dimension(25,40));
+                secondButtonPanel.setBackground(Color.BLUE);
+                JButton AMButtonS = AMButtonList.get(TimeEventIncremental);
+                JButton PMButtonS = PMButtonList.get(TimeEventIncremental);
+                secondButtonPanel.add(AMButtonS);
+                secondButtonPanel.add(PMButtonS);
+                TimeEventIncremental++;
                 JTextField beginTimeEventF = beginTimeEventFList.get(EventIncremental);
                 JTextField beginTimeEventS = beginTimeEventSList.get(EventIncremental);
                 JTextField endTimeEventF = endTimeEventFList.get(EventIncremental);
@@ -226,25 +299,25 @@ public class FrameLazySusanDisplay implements ActionListener {
                 EventIncremental++;
 
                 JPanel blankSpace = new JPanel();
-                blankSpace.setPreferredSize(new Dimension(70, 20));
+                blankSpace.setPreferredSize(new Dimension(70, 15));
                 blankSpace.setBackground(Color.BLUE);
 
                 JLabel beginTime = new JLabel("Begin Time");
                 JLabel endTime = new JLabel("End Time");
                 beginTime.setForeground(Color.WHITE);
                 endTime.setForeground(Color.WHITE);
-                beginTime.setPreferredSize(new Dimension(70, 20));
-                endTime.setPreferredSize(new Dimension(60, 20));
+                beginTime.setPreferredSize(new Dimension(70, 15));
+                endTime.setPreferredSize(new Dimension(60, 15));
 
-                beginTimeEventF.setPreferredSize(new Dimension(30, 20));
-                beginTimeEventS.setPreferredSize(new Dimension(30, 20));
-                endTimeEventF.setPreferredSize(new Dimension(30, 20));
-                endTimeEventS.setPreferredSize(new Dimension(30, 20));
+                beginTimeEventF.setPreferredSize(new Dimension(25, 20));
+                beginTimeEventS.setPreferredSize(new Dimension(25, 20));
+                endTimeEventF.setPreferredSize(new Dimension(25, 20));
+                endTimeEventS.setPreferredSize(new Dimension(25, 20));
 
                 JPanel eventTitlePanel = new JPanel();
-                eventTitlePanel.setPreferredSize(new Dimension(70, 30));
+                eventTitlePanel.setPreferredSize(new Dimension(65, 30));
                 JLabel eventTitle = new JLabel(title);
-                eventTitle.setFont(new Font("Times New Roman", Font.PLAIN, 10));
+                eventTitle.setFont(new Font("Times New Roman", Font.PLAIN, 9));
                 eventTitlePanel.add(eventTitle);
 
                 event.add(blankSpace);
@@ -255,10 +328,12 @@ public class FrameLazySusanDisplay implements ActionListener {
 
                 event.add(beginTimeEventF);
                 event.add(beginTimeEventS);
+                event.add(firstButtonPanel);
                 event.add(endTimeEventF);
                 event.add(endTimeEventS);
+                event.add(secondButtonPanel);
 
-                event.setPreferredSize(new Dimension(220, 70));
+                event.setPreferredSize(new Dimension(260, 75));
 
                 eventsToDisplay.put(i, event);
 
@@ -320,6 +395,12 @@ public class FrameLazySusanDisplay implements ActionListener {
     }
     public List<JToggleButton> getDeleteEventList(){
         return deleteEventList;
+    }
+    public List<Boolean> getAMTimeList(){
+        return AMTimeList;
+    }
+    public List<Boolean> getPMTimeList(){
+        return PMTimeList;
     }
     @Override
     public void actionPerformed(ActionEvent e ){

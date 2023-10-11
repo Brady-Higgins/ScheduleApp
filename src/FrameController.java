@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 
 public class FrameController {
     private static Point currentScreenLocation = new Point(0,0);
@@ -11,8 +10,8 @@ public class FrameController {
         currentScreenLocation = mainFrame.getLocationOnScreen();
         mainFrame.dispose();
         mainFrameDisposed = true;
-        mainFrame = FrameManager.getFrame();
-        InitializeMemory initalizeMemory = new InitializeMemory();
+        FrameManager.getFrame();
+        new InitializeMemory();
         OptionPanel.RestoreButtons();
     }
     public static Boolean checkIfFrameDisposed(){
@@ -24,13 +23,6 @@ public class FrameController {
     }
     public static Point getCurrentScreenLocation(){
         return currentScreenLocation;
-    }
-    public static void FileError(){
-        String errorMessage = "Error Locating File";
-        JFrame mainFrame = FrameManager.getFrame();
-        JOptionPane.showMessageDialog(mainFrame,errorMessage);
-        ClassLoader classLoader = InitializeMemory.class.getClassLoader();
-        ReturnToMain();
     }
     public static void ErrorMessage(String errorMessage){
         JFrame mainFrame = FrameManager.getFrame();

@@ -21,7 +21,7 @@ public class CreateSchedule implements ActionListener {
     static String endTimePMorAM = "";
     static boolean mainTimeComponent = false;
     List<String> totalEventTimesList = new ArrayList<>();
-    private final String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
+    private final String fileLocation = Objects.requireNonNull(this.getClass().getClassLoader().getResource("")).getPath();
     private final String TimeAssignedFile = fileLocation + "//Time.txt";
     private static FrameLazySusanDisplay frameLazySusanDisplay;
 
@@ -120,7 +120,6 @@ public class CreateSchedule implements ActionListener {
         boolean beginTime;
         boolean endTime;
         totalManualEvents = 0;
-        int[] currentTimeArray;
         String blankString = "blank";
         String stringTime;
         int totalManualTimeHour = 0;
@@ -129,9 +128,6 @@ public class CreateSchedule implements ActionListener {
         boolean secondAM;
         int timeDifferenceHour;
         int timeDifferenceMin;
-        String firstTimePeriod;
-        String secondTimePeriod;
-
 
         List<JTextField> beginTimeEventFList = FrameLazySusanDisplay.getListOfBeginningTimesHour();
         List<JTextField> beginTimeEventSList = FrameLazySusanDisplay.getListOfBeginningTimesMin();
@@ -191,12 +187,6 @@ public class CreateSchedule implements ActionListener {
                 }
             }
             if (beginTime & endTime) {
-                if (firstAm){
-                    firstTimePeriod = "AM";
-                }
-                else firstTimePeriod = "PM";
-                if (secondAM) secondTimePeriod = "AM";
-                else secondTimePeriod = "PM";
                 stringTime = beginTimeF + "-" + beginTimeS + "-" + endTimeF + "-" + endTimeS;
                 totalManualEvents += 1;
 
@@ -237,7 +227,6 @@ public class CreateSchedule implements ActionListener {
             }
             bw.close();
         } catch (Exception ex) {
-            System.out.println(ex);
             FrameController.ErrorMessage("An Error occurred, please try again");
             FrameController.ReturnToMain();
         }

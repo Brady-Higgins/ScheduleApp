@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -120,8 +121,8 @@ public class AddToBasics implements ActionListener {
                 i=0;
             }
             else if (CreateSchedule.EvaluateNum(orderNumberList.get(i).getText(),compactedMemoryStorage.size())) {
-                String newNum = orderNumberList.get(i).getText();
-                ReorderList(String.valueOf(i + 1 - eventsDeleted), newNum);
+                String newNum = String.valueOf(Integer.parseInt(orderNumberList.get(i).getText())-1);
+                ReorderList(String.valueOf(i- eventsDeleted), newNum);
             }
             else if (!deleteEventList.get(i).getModel().isSelected() || orderNumberList.get(i).getText().isEmpty()){
                 continue;
@@ -140,9 +141,15 @@ public class AddToBasics implements ActionListener {
         compactedMemoryStorage = InitializeMemory.getCompactMem();
 
         if (!originalNum.equals(newNum)) {
-            List<String> tempCopy = compactedMemoryStorage.get(Integer.parseInt(originalNum) - 1);
-            compactedMemoryStorage.remove(Integer.parseInt(originalNum) - 1);
-            compactedMemoryStorage.add(Integer.parseInt(newNum) - 1, tempCopy);
+            List<String> tempCopy = compactedMemoryStorage.get(Integer.parseInt(originalNum));
+            compactedMemoryStorage.remove(Integer.parseInt(originalNum));
+            if (compactedMemoryStorage.size()==1){
+                List<String> tempCopy2 = compactedMemoryStorage.get(0);
+                compactedMemoryStorage.remove(0);
+                compactedMemoryStorage.add(tempCopy);
+                compactedMemoryStorage.add(tempCopy2);
+            }
+            else compactedMemoryStorage.add(Integer.parseInt(newNum), tempCopy);
         }
 
         //Writes compacted memory to Basics
@@ -162,7 +169,6 @@ public class AddToBasics implements ActionListener {
                 }
             bw.close();
         } catch (Exception ex) {
-            System.out.println(ex);
             FrameController.ErrorMessage("An Error occurred, please try again");
             FrameController.ReturnToMain();
         }
@@ -184,19 +190,15 @@ public class AddToBasics implements ActionListener {
                 FrameController.ErrorMessage("Please Complete All Fields!");
             } else {
                 String orderNumberValString = orderNumber.getText();
-                int orderNumberVal = 1;
+                int orderNumberVal;
                 if (!checkNumString(orderNumberValString)) {
                     orderNumberVal= compactMemSize+1;
                 } else orderNumberVal = Integer.parseInt(orderNumberValString);
                 List<String> memoryStorage = InitializeMemory.getMemStorage();
                 memoryStorage.add(" [en] ");
-                for (String word : eventName.getText().split(" ")){
-                    memoryStorage.add(word);
-                }
+                Collections.addAll(memoryStorage, eventName.getText().split(" "));
                 memoryStorage.add(" [ei] ");
-                for (String word : eventInfoText.getText().split(" ")){
-                    memoryStorage.add(word);
-                }
+                Collections.addAll(memoryStorage, eventInfoText.getText().split(" "));
                 memoryStorage.add(" [Time] ");
                 memoryStorage.add("Pass");
                     if (orderNumberVal < compactMemSize) {
@@ -225,7 +227,6 @@ public class AddToBasics implements ActionListener {
                             bw.close();
 
                         } catch (Exception ex) {
-                            System.out.println(ex);
                             FrameController.ErrorMessage("An Error occurred, please try again");
                             FrameController.ReturnToMain();
                         }
@@ -233,7 +234,7 @@ public class AddToBasics implements ActionListener {
 
                     }
             FrameController.ReturnToMain();
-            AddToBasics addToBasics = new AddToBasics();
+            new AddToBasics();
             return;
             }
         FrameController.ErrorMessage("Input Invalid");

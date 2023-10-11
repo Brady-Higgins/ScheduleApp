@@ -137,7 +137,7 @@ public class FrameLazySusanDisplay implements ActionListener {
             AMButton.add(AMButtonLabel);
             AMButton.addActionListener(e -> {
                 AMButton.setVisible(false);
-                int index = Integer.valueOf(AMButton.getName());
+                int index = Integer.parseInt(AMButton.getName());
                 AMTimeList.set(index,true);
                 PMButtonList.get(index).setVisible(false);
                 JPanel parentPanel = (JPanel) SwingUtilities.getAncestorOfClass(JPanel.class, AMButton);
@@ -158,7 +158,7 @@ public class FrameLazySusanDisplay implements ActionListener {
             PMButton.add(PMButtonLabel);
             PMButton.addActionListener(e -> {
                 PMButton.setVisible(false);
-                int index = Integer.valueOf(PMButton.getName());
+                int index = Integer.parseInt(PMButton.getName());
                 PMTimeList.set(index,true);
                 AMButtonList.get(index).setVisible(false);
                 JPanel parentPanel = (JPanel) SwingUtilities.getAncestorOfClass(JPanel.class, PMButton);

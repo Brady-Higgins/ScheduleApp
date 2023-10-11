@@ -7,11 +7,10 @@ import java.util.*;
 import java.util.List;
 
 public class LookAtSchedule {
-    private final String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
+    private final String fileLocation = Objects.requireNonNull(this.getClass().getClassLoader().getResource("")).getPath();
     private final String TimeAssignedFile = fileLocation + "//Time.txt";
-    private final List<List<String>> compactMem = InitializeMemory.getCompactMem();
 
-    private List<String> eventInfoList = new ArrayList<>();
+    private final List<String> eventInfoList = new ArrayList<>();
     private int iterationsSchedule = 0;
 
 
@@ -19,6 +18,7 @@ public class LookAtSchedule {
         OptionPanel.ReturnToMainOnly();
         Boolean fileExists = CheckTimeFileExists();
         if (fileExists){
+            final List<List<String>> compactMem = InitializeMemory.getCompactMem();
             ArrayList<JButton> infoButtonList = new ArrayList<>();
             final int compactMemSize = compactMem.size() + 8;
             int startZeroIncrem =0;
@@ -35,7 +35,7 @@ public class LookAtSchedule {
                 infoButtonList.add(eventButton);
             }
         int eventNum;
-        if (compactMemSize == 1) {
+        if (compactMem.size()==0) {
             FrameController.ErrorMessage("No Events To Display!");
             FrameController.ReturnToMain();
         }else {
@@ -112,36 +112,32 @@ public class LookAtSchedule {
                     if (eventNameString.length() > 25) {
                         eventNameString = eventNameString.substring(0, 25) + "...";
                     }
-
                     eventInfoList.add(eventInfoStringBuilder.toString());
                     JLabel eventName = new JLabel("<html>" + eventNameString + "</html>");
                     eventName.setFont(new Font("Times New Roman", Font.BOLD, 14));
                     eventName.setVerticalAlignment(JLabel.TOP);
                     eventName.setPreferredSize(new Dimension(90, 40));
                     eventSplit = eventTimeString.split("-");
-                    if (Integer.parseInt(eventSplit[0]) > 12) {
-                        eventSplit[0] = String.valueOf(Integer.parseInt(eventSplit[0]) - 12);
+                    if (Integer.parseInt(eventSplit[0]) >= 12) {
+                        if (Integer.parseInt(eventSplit[0]) > 12) {
+                            eventSplit[0] = String.valueOf(Integer.parseInt(eventSplit[0]) - 12);
+                        }
                         firstTimePeriod = "PM";
-                    }
-                    else{
+                    } else {
+                        if (Integer.parseInt(eventSplit[0]) == 0) {
+                            eventSplit[0] = "12";
+                        }
                         firstTimePeriod = "AM";
                     }
-                    if (Integer.parseInt(eventSplit[2]) > 12) {
-                        eventSplit[2] = String.valueOf(Integer.parseInt(eventSplit[2]) - 12);
+                    if (Integer.parseInt(eventSplit[2]) >= 12) {
+                        if (Integer.parseInt(eventSplit[2]) > 12) {
+                            eventSplit[2] = String.valueOf(Integer.parseInt(eventSplit[2]) - 12);
+                        }
                         secondTimePeriod = "PM";
-                        if (Integer.parseInt(eventSplit[0]) == 12) firstTimePeriod = "PM";
-                    }
-                    else{
-                        secondTimePeriod = "AM";
-                    }
-                    if (Integer.parseInt(eventSplit[0]) == 12 && firstTimePeriod.equals(secondTimePeriod)){
-                        firstTimePeriod = "AM";
-                    }
-                    System.out.println(firstTimePeriod.equals(secondTimePeriod));
-                    if (Integer.parseInt(eventSplit[2]) == 12 && firstTimePeriod.equals(secondTimePeriod) && firstTimePeriod.equals("AM")){
-                        secondTimePeriod = "PM";
-                    }
-                    if (Integer.parseInt(eventSplit[2]) == 12 && firstTimePeriod.equals(secondTimePeriod) && firstTimePeriod.equals("PM")){
+                    } else {
+                        if (Integer.parseInt(eventSplit[2]) == 0) {
+                            eventSplit[2] = "12";
+                        }
                         secondTimePeriod = "AM";
                     }
                     String eventTimeS = eventSplit[0] + ":" + eventSplit[1] + firstTimePeriod + "-->" + eventSplit[2] + ":" + eventSplit[3] + secondTimePeriod;
@@ -163,7 +159,6 @@ public class LookAtSchedule {
                 bw.close();
             }
             catch (Exception ex) {
-                System.out.println(ex);
                 FrameController.ErrorMessage("Error in application, resetting.");
                 FrameController.ReturnToMain();
                 return;

@@ -1,12 +1,12 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class InitializeMemory {
-    private final String fileLocation = this.getClass().getClassLoader().getResource("").getPath();
+    private final String fileLocation = Objects.requireNonNull(this.getClass().getClassLoader().getResource("")).getPath();
     private final String basicsFileLocation = fileLocation + "//Basics.txt";
 
     private static List<String> memoryStorage;
@@ -26,13 +26,15 @@ public class InitializeMemory {
                 while ((line = bw.readLine()) != null) {
                     for (String s : line.split(" ")) {
                         String stringSNoSpace = s.replaceAll("\\s", "");
-                        memoryStorage.add((" " + stringSNoSpace));
+                        if (stringSNoSpace.equals(""))continue;
+                        memoryStorage.add((stringSNoSpace));
                     }
                 }
                 bw.close();
 
             } catch (Exception ex) {
-
+                FrameController.ErrorMessage("An Error occurred, please try again");
+                FrameController.ReturnToMain();
             }
 
 

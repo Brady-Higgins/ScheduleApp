@@ -139,7 +139,13 @@ public class AddToBasics implements ActionListener {
         //Rearranges Compacted memory
 
         compactedMemoryStorage = InitializeMemory.getCompactMem();
-
+        originalNum = String.valueOf(Integer.parseInt(originalNum));
+        if (Integer.parseInt(originalNum) <0){
+            originalNum = "0";
+        }
+        if (Integer.parseInt(newNum)>compactedMemoryStorage.size()){
+            newNum = String.valueOf(compactedMemoryStorage.size()-1);
+        }
         if (!originalNum.equals(newNum)) {
             List<String> tempCopy = compactedMemoryStorage.get(Integer.parseInt(originalNum));
             compactedMemoryStorage.remove(Integer.parseInt(originalNum));
@@ -192,6 +198,7 @@ public class AddToBasics implements ActionListener {
                 String orderNumberValString = orderNumber.getText();
                 int orderNumberVal;
                 if (!checkNumString(orderNumberValString)) {
+                    System.out.println("ypu");
                     orderNumberVal= compactMemSize+1;
                 } else orderNumberVal = Integer.parseInt(orderNumberValString);
                 List<String> memoryStorage = InitializeMemory.getMemStorage();
@@ -204,7 +211,7 @@ public class AddToBasics implements ActionListener {
                     if (orderNumberVal < compactMemSize) {
                         InitializeMemory.updateMemory(memoryStorage);
                         compactedMemoryStorage = InitializeMemory.CompactMem();
-                        ReorderList(String.valueOf(compactedMemoryStorage.size()), orderNumber.getText());
+                        ReorderList(String.valueOf(compactedMemoryStorage.size()-1), String.valueOf(Integer.parseInt(orderNumber.getText())-1));
                     } else {
                         if (memoryStorage.get(0).isBlank()) {
                             memoryStorage.remove(0);                                                //more brute force
